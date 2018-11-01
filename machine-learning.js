@@ -13,24 +13,41 @@
     x: rand(X_MAX),
     y: rand(Y_MAX)
   }))
-  const draw = () => {
+  const weights = Array(100).fill().map(() => ({
+    x: rand(1),
+    y: rand(1)
+  }))
+  const classifier = (output) => output > 0 ? 1 : 0
+  const dot = (w, p) => w.x * p.x + w.y * p.y
+  const prediction = (weight, point) => classifier(dot(weight, point))
+
+  const chart = (prediction) => {
     const el = (name) => document.createElementNS("http://www.w3.org/2000/svg", name)
-    const ci = point => {
+    const colours = ["red", "blue"]
+    const circ = (point, colour) => {
       let circle = el("circle")
       circle.setAttribute("cx", point.x)
       circle.setAttribute("cy", point.y)
       circle.setAttribute("r",5)
-      // circle.setAttribute("style", "color:black")
+      circle.style.fill = colour
       return circle
     }
 
-    let root = document.getElementById("root")
+    let line = el("line")
+    line.setAttribute("x1", 0)
+    line.setAttribute("y1", 0)
+    line.setAttribute("x2", X_MAX)
+    line.setAttribute("y2", Y_MAX)
+    line.setAttribute("stroke", "gray")
+
     let svg = el("svg")
     svg.setAttribute("height", Y_MAX)
     svg.setAttribute("width", X_MAX)
+    svg.appendChild(line)
 
-    points.map(point => svg.appendChild(ci(point)))
-    root.appendChild(svg)
+    points.map(point => svg.appendChild(circ(point, colours[prediction({x:1,y:1}, point)])))
+    return svg
   }
-  draw()
+
+  document.getElementById("root").appendChild(chart(prediction))
 })()
