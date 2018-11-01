@@ -1,0 +1,23 @@
+{
+  "name": "fff-machine-learning",
+  "version": "1.0.0",
+  "description": "Recreation of funfunfunction machine learning video",
+  "main": "machine-learning.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gist.github.com/d6791c8181fbee2bb4a83c442219f77a.git"
+  },
+  "keywords": [
+    "machine-learning",
+    "javascript"
+  ],
+  "author": "Ian Channing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a"
+  },
+  "homepage": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a"
+}
