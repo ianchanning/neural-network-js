@@ -65,7 +65,7 @@ const fff = (() => {
      *
      * @param {object} weights {x,y} I think this is typically {w1, w2}
      * @param {object} point {x,y} Training example typically x1, x2
-     * @param {float} actual Correct label for the example
+     * @param {integer} actual 0|1 Correct label for the example
      * @returns {object} {x,y} updated weights
      */
     const train = (weights, point, actual) => {
@@ -83,13 +83,17 @@ const fff = (() => {
       // dZ = A - Y (N.B.  matrices, A = activation/predict, Y = actual)
       // dw = 1/m X . dZ_T (_T = matrix transpose)
       // In individual loop steps (m examples):
-      // dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m
+      // dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m (equivalent of {point.x, point.y} * error for all examples)
       // dw /= m (it seems we miss the division here)
       // w -= alpha * dw
+      //
+      // Comparing to my notes it seems like we calculate -error (or -dZ)
+      // As A - Y is reversed
+      // Then it makes sense to have a '+' when updating the weights
       const error = actual - predict
       // TODO: I think this is effectively the back propagation step
       // w := w - alpha * dw (as per Andrew Ng python deep learning code)
-      // N.B. We're currently not using the learning rate (alpha)
+      // N.B. We're currently *not* using the learning rate (alpha)
       return {
         x: weights.x + (point.x * error),
         y: weights.y + (point.y * error)
