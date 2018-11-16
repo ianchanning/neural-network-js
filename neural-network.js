@@ -12,15 +12,15 @@ const fff = (() => {
   const X_MAX = 400
   const Y_MAX = 400
   const EXAMPLE_COUNT = 100000
-  const gym = () => {
+  const generator = () => {
     /**
-     * Generate random number between high and low
+     * Generate random number between min and max
      *
-     * @param   {float} high
-     * @param   {float} low
+     * @param   {float} min
+     * @param   {float} max
      * @returns {float} Random number
      */
-    const rand = (high, low) => Math.random() * (high - low) + low
+    const rand = (min, max) => Math.random() * (max - min) + min
     // random set of data points
     const points = length => Array(length).fill().map(() => ({
       x: rand(0, X_MAX),
@@ -31,6 +31,23 @@ const fff = (() => {
       x: rand(-1, 1),
       y: rand(-1, 1)
     }
+    // we happen to know that this will classify out points correctly
+    // so we can use it to generate actual values for training examples
+    const team = point => point.x > point.y ? 1 : 0
+    const labeller = examples => examples.map(
+      point => ({point, actual: team(point)})
+    )
+    // generate labelled training data
+    const examples = length => labeller(points(length))
+
+    return {
+      weights,
+      points,
+      examples
+    }
+  }
+
+  const gym = (weights, examples) => {
     /**
      * Binary classifier
      *
@@ -57,9 +74,6 @@ const fff = (() => {
     const dot = (a, b) => a.x * b.x + a.y * b.y
     // make a prediction given the weigts and a point
     const prediction = (weights, point) => classifier(dot(weights, point))
-    // we happen to know that this will classify out points correctly
-    // so we can use it to generate actual values for training examples
-    const team = point => point.x > point.y ? 1 : 0
     /**
      * Single training step
      *
@@ -99,21 +113,20 @@ const fff = (() => {
         y: weights.y + (point.y * error)
       }
     }
-    // generate labelled training data
-    const examples = points(EXAMPLE_COUNT).map(
-      point => ({point, actual: team(point)})
-    )
+
+    const trainer = (acc, example) => train(acc, example.point, example.actual)
+    // TODO: I think just just does one iteration of gradient descent
+    const trainedWeights = examples.reduce(trainer, weights)
+    // console.log(trainedWeights)
+
     return {
-      examples,
       train,
-      weights,
-      points,
-      prediction
+      prediction,
+      trainedWeights
     }
   }
 
-  const chartGym = gym()
-  const chart = prediction => {
+  const chart = (generator, gym) => {
     const el = name => document.createElementNS(
       "http://www.w3.org/2000/svg",
       name
@@ -148,21 +161,19 @@ const fff = (() => {
       return svg
     }
 
-    // TODO: I think just just does one iteration of gradient descent
-    const trainedWeights = chartGym.examples.reduce(
-      (acc, example) => chartGym.train(acc, example.point, example.actual),
-      chartGym.weights
-    )
-    // console.log(trainedWeights)
-
     const fill = svg => {
-      const graphPoints = chartGym.points(200)
+      const graphPoints = generator.points(200)
       graphPoints.map(point => svg.appendChild(
-        clickelem(circle(point, 5, colours[prediction(trainedWeights, point)]))
+        clickelem(circle(
+          point,
+          5,
+          colours[gym.prediction(gym.trainedWeights, point)]
+        ))
       ))
       graphPoints.map(point => svg.appendChild(
         circle(point, 1, "white")
       ))
+      // want the line to appear above the dots
       svg.appendChild(line({x: 0, y: 0}, {x: X_MAX, y: Y_MAX}, "gray"))
       return svg
     }
@@ -170,7 +181,12 @@ const fff = (() => {
     return fill(svg())
   }
 
-  document.getElementById("root").appendChild(chart(chartGym.prediction))
+  const chartGen = generator()
+  const chartGym = gym(
+    chartGen.weights,
+    chartGen.examples(EXAMPLE_COUNT)
+  )
+  document.getElementById("root").appendChild(chart(chartGen, chartGym))
 
   return {
     chartGym

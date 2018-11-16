@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a"
   },
-  "homepage": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a"
+  "homepage": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-plugin-react": "^7.11.1"
+  }
 }
