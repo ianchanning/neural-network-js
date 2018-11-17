@@ -12,6 +12,11 @@ const fff = (() => {
   const X_MAX = 400
   const Y_MAX = 400
   const EXAMPLE_COUNT = 100000
+  /**
+   * Generate the required data specific for this network
+   *
+   * @returns {object} {weights,points} the initial weights and training/test data
+   */
   const generator = () => {
     /**
      * Generate random number between min and max
@@ -47,6 +52,14 @@ const fff = (() => {
     }
   }
 
+  /**
+   * Neural Network
+   *
+   * @param {object}
+   * @param {object} weights {x,y} Initial weights
+   * @param {array} examples [{x,y}] Training set examples
+   * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
+   */
   const gym = (weights, examples) => {
     /**
      * Binary classifier
@@ -126,12 +139,11 @@ const fff = (() => {
     }
   }
 
-  const chart = (generator, gym) => {
+  const chart = () => {
     const el = name => document.createElementNS(
       "http://www.w3.org/2000/svg",
       name
     )
-    const colours = ["red", "blue"]
     const circle = (centre, radius, colour) => {
       let c = el("circle")
       c.setAttribute("cx", centre.x)
@@ -161,32 +173,36 @@ const fff = (() => {
       return svg
     }
 
-    const fill = svg => {
-      const graphPoints = generator.points(200)
-      graphPoints.map(point => svg.appendChild(
-        clickelem(circle(
-          point,
-          5,
-          colours[gym.prediction(gym.trainedWeights, point)]
-        ))
-      ))
-      graphPoints.map(point => svg.appendChild(
-        circle(point, 1, "white")
-      ))
-      // want the line to appear above the dots
-      svg.appendChild(line({x: 0, y: 0}, {x: X_MAX, y: Y_MAX}, "gray"))
-      return svg
+    return {
+      clickelem,
+      circle,
+      line,
+      svg
     }
+  }
 
-    return fill(svg())
+  const fill = (generator, gym, chart) => {
+    const colours = ["red", "blue"]
+    const graphPoints = generator.points(200)
+    const svg = chart.svg()
+    graphPoints.map(point => svg.appendChild(
+      chart.clickelem(chart.circle(
+        point,
+        5,
+        colours[gym.prediction(gym.trainedWeights, point)]
+      ))
+    ))
+    graphPoints.map(point => svg.appendChild(
+      chart.circle(point, 1, "white")
+    ))
+    // want the line to appear above the dots
+    svg.appendChild(chart.line({x: 0, y: 0}, {x: X_MAX, y: Y_MAX}, "gray"))
+    return svg
   }
 
   const chartGen = generator()
-  const chartGym = gym(
-    chartGen.weights,
-    chartGen.examples(EXAMPLE_COUNT)
-  )
-  document.getElementById("root").appendChild(chart(chartGen, chartGym))
+  const chartGym = gym(chartGen.weights, chartGen.examples(EXAMPLE_COUNT))
+  document.getElementById("root").appendChild(fill(chartGen, chartGym, chart()))
 
   return {
     chartGym
