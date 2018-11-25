@@ -1,16 +1,16 @@
-**The code works but the explantion is Work In Progress**
-
-Download the zip and open `index.html`:
+# A Neural Network for the JavaScript programmer
 
 [![Screenshot](neural-network-screenshot.png)](neural-network-screenshot.png)
 
-Each section here will be eventually turned into a slide
+**The code works but the explantion is Work In Progress**
 
-# Neural Network for the JavaScript programmer
+**Quickstart:** Download the zip and open `index.html`
+
+Each section here will be eventually turned into a slide
 
 Let's live code:
 * a neural network
-* data visualisation
+* data visualization
 
 This is a mashup of:
 
