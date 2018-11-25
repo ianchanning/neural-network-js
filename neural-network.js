@@ -11,7 +11,9 @@ const fff = (() => {
   "use strict"
   const X_MAX = 400
   const Y_MAX = 400
+  // usually called the training set
   const EXAMPLE_COUNT = 100000
+  const TEST_COUNT = 200
 
   /**
    * Generate the required data specific for this network
@@ -213,16 +215,16 @@ const fff = (() => {
 
   const fill = (generator, gym, chart) => {
     const colours = ["red", "blue"]
-    const graphPoints = generator.points(200)
+    const testPoints = generator.points(TEST_COUNT)
     const svg = chart.svg()
-    graphPoints.map(point => svg.appendChild(
+    testPoints.map(point => svg.appendChild(
       chart.clickelem(chart.circle(
         point,
         5,
         colours[gym.prediction(gym.trainedWeights, point)]
       ))
     ))
-    graphPoints.map(point => svg.appendChild(
+    testPoints.map(point => svg.appendChild(
       chart.circle(point, 1, "white")
     ))
     // want the line to appear in front of the dots so draw it after
@@ -231,7 +233,9 @@ const fff = (() => {
   }
 
   const chartGen = generator()
-  const chartGym = gym(chartGen.weights, chartGen.examples(EXAMPLE_COUNT))
+  // note the connection with testPoints in the fill function
+  const examplePoints = chartGen.examples(EXAMPLE_COUNT)
+  const chartGym = gym(chartGen.weights, examplePoints)
   document.getElementById("root").appendChild(fill(chartGen, chartGym, chart()))
 
   return {
