@@ -1,23 +1,32 @@
 **The code works but the explantion is Work In Progress**
 
+Download the zip and open `index.html`:
+
+[![Screenshot](neural-network-screenshot.png)](neural-network-screenshot.png)
+
 Each section here will be eventually turned into a slide
 
 # Neural Network for the JavaScript programmer
-
 
 Let's live code:
 * a neural network
 * data visualisation
 
+This is a mashup of:
+
+* [Funfunfunction playlist on Neural Networks](https://www.youtube.com/watch?v=anN2Ey37s-o)
+* [Andrew Ng's deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/)
+* [Neural Networks and Deep Learning course](http://neuralnetworksanddeeplearning.com)
+
 # Where it all goes wrong
 
 Talks that promise 'simple' go bad at slide two
 
-First slide: "This is going to be simple".
+First slide: "This is going to be simple!"
 
 Second slide "This isn't simple"
 
-Game Over. Go to step 1.
+Game Over.
 
 # Ha! I made it to slide 3
 
