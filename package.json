@@ -1,25 +1,27 @@
 {
-  "name": "fff-machine-learning",
+  "name": "neural-network-js",
   "version": "1.0.0",
-  "description": "Recreation of funfunfunction machine learning video",
-  "main": "machine-learning.js",
+  "description": "A Neural Network from scratch in JavaScript",
+  "main": "neural-network.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "node_modules/.bin/eslint"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gist.github.com/d6791c8181fbee2bb4a83c442219f77a.git"
+    "url": "git+ssh://git@github.com:ianchanning/neural-network-js.git"
   },
   "keywords": [
     "machine-learning",
+    "neural-networks",
     "javascript"
   ],
   "author": "Ian Channing",
   "license": "MIT",
   "bugs": {
-    "url": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a"
+    "url": "https://github.com/ianchanning/neural-network-js"
   },
-  "homepage": "https://gist.github.com/d6791c8181fbee2bb4a83c442219f77a",
+  "homepage": "https://github.com/ianchanning/neural-network-js",
   "devDependencies": {
     "eslint": "^5.9.0",
     "eslint-plugin-react": "^7.11.1"
