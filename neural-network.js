@@ -12,6 +12,7 @@ const fff = (() => {
   const X_MAX = 400
   const Y_MAX = 400
   const EXAMPLE_COUNT = 100000
+
   /**
    * Generate the required data specific for this network
    *
@@ -36,8 +37,12 @@ const fff = (() => {
       x: rand(-1, 1),
       y: rand(-1, 1)
     }
-    // we happen to know that this will classify out points correctly
-    // so we can use it to generate actual values for training examples
+    /**
+     * we happen to know that this will classify out points correctly
+     * so we can use it to generate actual labels for training examples
+     * here x/y are coordinates in a SVG/CSS style where top left is 0,0
+     * the line is then effectively y = x
+     */
     const team = point => point.x > point.y ? 1 : 0
     const labeller = examples => examples.map(
       point => ({point, actual: team(point)})
@@ -53,9 +58,70 @@ const fff = (() => {
   }
 
   /**
+   * SVG chart with circles
+   *
+   * This is not part of the network
+   * but it's important to show how easy it can be to visualise the data
+   *
+   * @returns {Object} Primitives for creating the chart
+   */
+  const chart = () => {
+    const element = name => document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      name
+    )
+    /**
+     * @example <svg height="400" width="400">...</svg>
+     */
+    const svg = () => {
+      let svg = element("svg")
+      svg.setAttribute("height", Y_MAX)
+      svg.setAttribute("width", X_MAX)
+      return svg
+    }
+    /**
+     * @example <circle cx="100" cy="100" r="5" />
+     */
+    const circle = (centre, radius, colour) => {
+      let c = element("circle")
+      c.setAttribute("cx", centre.x)
+      c.setAttribute("cy", centre.y)
+      c.setAttribute("r", radius)
+      c.style.fill = colour
+      return c
+    }
+    /**
+     * @example <circle ... onclick="..." />
+     */
+    const clickelem = element => {
+      /* eslint no-console: "off" */
+      element.onclick = e => console.log(e.target.attributes)
+      return element
+    }
+    /**
+     * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
+     */
+    const line = (start, end, colour) => {
+      let l = element("line")
+      l.setAttribute("x1", start.x)
+      l.setAttribute("y1", start.y)
+      l.setAttribute("x2", end.x)
+      l.setAttribute("y2", end.y)
+      l.setAttribute("stroke", colour)
+      return l
+    }
+
+    return {
+      clickelem,
+      circle,
+      line,
+      svg
+    }
+  }
+
+  /**
    * Neural Network
    *
-   * @param {object}
    * @param {object} weights {x,y} Initial weights
    * @param {array} examples [{x,y}] Training set examples
    * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
@@ -128,7 +194,13 @@ const fff = (() => {
     }
 
     const trainer = (acc, example) => train(acc, example.point, example.actual)
-    // TODO: I think just just does one iteration of gradient descent
+    // TODO: This does one iteration of gradient descent
+    //       It loops through all examples once
+    //       This is the equivalent of doing one matrix multiplication
+    //       You realise from this how that bias can become an issue
+    //       If you pass over the same set of examples a million times
+    //       Then you're going to be completely trained on all the details
+    //       of those examples
     const trainedWeights = examples.reduce(trainer, weights)
     // console.log(trainedWeights)
 
@@ -136,48 +208,6 @@ const fff = (() => {
       train,
       prediction,
       trainedWeights
-    }
-  }
-
-  const chart = () => {
-    const el = name => document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      name
-    )
-    const circle = (centre, radius, colour) => {
-      let c = el("circle")
-      c.setAttribute("cx", centre.x)
-      c.setAttribute("cy", centre.y)
-      c.setAttribute("r", radius)
-      c.style.fill = colour
-      return c
-    }
-    const clickelem = el => {
-      /* eslint no-console: "off" */
-      el.onclick = e => console.log(e.target.attributes)
-      return el
-    }
-    const line = (start, end, colour) => {
-      let l = el("line")
-      l.setAttribute("x1", start.x)
-      l.setAttribute("y1", start.y)
-      l.setAttribute("x2", end.x)
-      l.setAttribute("y2", end.y)
-      l.setAttribute("stroke", colour)
-      return l
-    }
-    const svg = () => {
-      let svg = el("svg")
-      svg.setAttribute("height", Y_MAX)
-      svg.setAttribute("width", X_MAX)
-      return svg
-    }
-
-    return {
-      clickelem,
-      circle,
-      line,
-      svg
     }
   }
 
@@ -195,7 +225,7 @@ const fff = (() => {
     graphPoints.map(point => svg.appendChild(
       chart.circle(point, 1, "white")
     ))
-    // want the line to appear above the dots
+    // want the line to appear in front of the dots so draw it after
     svg.appendChild(chart.line({x: 0, y: 0}, {x: X_MAX, y: Y_MAX}, "gray"))
     return svg
   }
