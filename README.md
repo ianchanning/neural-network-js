@@ -21,31 +21,47 @@ Game Over. Go to step 1.
 
 # Ha! I made it to slide 3
 
+Now I will actually start...
+
+With a side-topic...
+
+JavaScript's `map` and `reduce` functions in maths
+
+Reduce the gap between maths and code
+
 # 𝒚 = 𝒇(𝒙) = 2𝒙
 
-```
- y
- ^
- |
-4|   +
-3|
-2| +
-1|
-0+------>x
- 0 1 2
-```
+Still with me?
+
+Let's draw a graph
+
+      𝒚
+      ^
+      |
+    4 |   +
+    3 |
+    2 | +
+    1 |
+    0 +------> 𝒙
+      0 1 2
 
 # Mathsy definitions
 
+This is actually University level maths - set theory. 
+
+But I'll try anyway.
+
 What's the mathsy name for:
 
-> I've got one set and I want to go to another set?
+> I've got one 'set' and I want to go to another 'set'?
 
     +-------+             +-------+
     | 0 1 2 | -- f(x) --> | 0 2 4 |
     +-------+             +-------+
 
 Mapping!
+
+**Still with me?**
 
 # 𝒇(𝒙) in JavaScript
 
