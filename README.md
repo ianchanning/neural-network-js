@@ -55,6 +55,7 @@ What's the mathsy name for:
 
 > I've got one 'set' and I want to go to another 'set'?
 
+     𝒙s                    𝒚s
     +-------+             +-------+
     | 0 1 2 | -- f(x) --> | 0 2 4 |
     +-------+             +-------+
