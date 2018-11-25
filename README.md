@@ -114,13 +114,14 @@ rand(1,3);
 rand(0,400); // what we actually use
 ```
 
-Stretch (*) and shift (+)
+Stretch (`*`) and shift (`+`)
 
     Rand(0,1) -->  Rand(1,3)
 
-    +-----+        +-----+-----+
-    0     1   -->  0     1     2     3
-                         +-----+-----+
+    0     1     2     3
+    +-----+
+    +-----+-----+        (Stretch by (3 - 1))
+          +-----+-----+  (Shift by 1)
 
 # Neural Network time
 
