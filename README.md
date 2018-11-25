@@ -82,7 +82,7 @@ function f(x) {return 2 * x;}
 // could have called it 'double'
 // function double(x) {return 2 * x;}
 var xs = [0,1,2]; // want output [0,2,4]
-var y  = xs.map(f); // [0,2,4]
+var ys = xs.map(f); // [0,2,4]
 ```
 
 # 2 + 2 + 2
