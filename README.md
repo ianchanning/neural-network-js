@@ -1,6 +1,9 @@
+**The code works but the explantion is Work In Progress**
+
+Each section here will be eventually turned into a slide
+
 # Neural Network for the JavaScript programmer
 
-**The code works but the explantion is Work In Progress**
 
 Let's live code:
 * a neural network
@@ -39,9 +42,9 @@ What's the mathsy name for:
 
 > I've got one set and I want to go to another set?
 
-+-------+      +-------+
-| 0 1 2 | ---> | 0 2 4 |
-+-------+      +-------+
+    +-------+      +-------+
+    | 0 1 2 | ---> | 0 2 4 |
+    +-------+      +-------+
 
 Mapping!
 
