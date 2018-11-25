@@ -167,28 +167,31 @@ const fff = (() => {
       // also know as... y_hat
       const predict = prediction(weights, point)
       // TODO: I'm not convinced this is correct
-      // Or at least I don't know why it's correct
-      // It could be by accident because of the line we've chosen
-      // possibilities are
-      // actual: 0|1
-      // predict: 0|1
-      // error: 0|-1|1|0
-      // Andrew Ng Deep Learning wk 2:
-      // This does appear that we're using Logistic Regression
-      // dZ = A - Y (N.B.  matrices, A = activation/predict, Y = actual)
-      // dw = 1/m X . dZ_T (_T = matrix transpose)
-      // In individual loop steps (m examples):
-      // dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m (equivalent of {point.x, point.y} * error for all examples)
-      // dw /= m (it seems we miss the division here)
-      // w -= alpha * dw
+      //       Or at least I don't know why it's correct
+      //       It could be by accident because of the line we've chosen
+      //       possibilities are
+      //       actual: 0|1
+      //       predict: 0|1
+      //       error: 0|-1|1|0
+      //       Andrew Ng Deep Learning wk 2:
+      //       This does appear that we're using Logistic Regression
+      //       dZ = A - Y (N.B.  matrices, A = activation/predict, Y = actual)
+      //       dw = 1/m X . dZ_T (_T = matrix transpose)
+      //       In individual loop steps (m examples):
+      //       dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m
+      //       (equivalent of {point.x, point.y} * error for all examples)
+      //       dw /= m (it seems we miss the division here)
+      //       w -= alpha * dw
+      // See also @link http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
       //
       // Comparing to my notes it seems like we calculate -error (or -dZ)
       // As A - Y is reversed
       // Then it makes sense to have a '+' when updating the weights
       const error = actual - predict
       // TODO: I think this is effectively the back propagation step
-      // w := w - alpha * dw (as per Andrew Ng python deep learning code)
-      // N.B. We're currently *not* using the learning rate (alpha)
+      //       w := w - alpha * dw (as per Andrew Ng python deep learning code)
+      //       N.B. We're currently *not* using the learning rate (alpha)
+      //
       return {
         x: weights.x + (point.x * error),
         y: weights.y + (point.y * error)
