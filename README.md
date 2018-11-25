@@ -30,7 +30,7 @@ Game Over.
 
 # Ha! I made it to slide 3
 
-Now I will actually start...
+Now I will actually start
 
 With a side-topic...
 
@@ -56,7 +56,7 @@ Let's draw a graph
 
 # Mathsy definitions
 
-This is actually University level maths - set theory. 
+This is actually University level maths - Set Theory. 
 
 But I'll try anyway.
 
@@ -65,9 +65,9 @@ What's the mathsy name for:
 > I've got one 'set' and I want to go to another 'set'?
 
      𝒙s                    𝒚s
-    +-------+             +-------+
-    | 0 1 2 | -- f(x) --> | 0 2 4 |
-    +-------+             +-------+
+    +-------+          +-------+
+    | 0 1 2 | -- 𝒇 --> | 0 2 4 |
+    +-------+          +-------+
 
 Mapping!
 
@@ -87,7 +87,7 @@ var ys = xs.map(f); // [0,2,4]
 
 # 2 + 2 + 2
 
-𝒚 = 𝛴 𝒇(𝒙) = 𝛴 2𝒙
+𝒚 = ∑ 𝒇(𝒙) = ∑ 2𝒙
 
      𝒙  2𝒙 Running total
      1  2  2
@@ -116,7 +116,7 @@ rand(0,400); // what we actually use
 
 Stretch (`*`) and shift (`+`)
 
-    Rand(0,1) -->  Rand(1,3)
+    rand(0,1) -->  rand(1,3)
 
     0     1     2     3
     +-----+
@@ -129,7 +129,7 @@ Let's meet the the [cross entropy][1] cost function.
 
 The bit we use is the derivative for back-propagation in eqn (61)
 
-dC/dW_j = 1/n * 𝛴 x_j (s(z)-y)
+dC/dW_j = 1/n * ∑ x_j (s(z)-y)
 
 # To be continued...
 
