@@ -61,12 +61,12 @@ var y  = xs.map(f); // [0,2,4]
 
 𝒚 = 𝛴 𝒇(𝒙) = 𝛴 2𝒙
 
- 𝒙  2𝒙 Running total
- 1  2  2
- 1  2  4
-+1 +2  6
--- --
- 3  6
+     𝒙  2𝒙 Running total
+     1  2  2
+     1  2  4
+    +1 +2  6
+    -- --
+     3  6
 
 ```javascript
 function sum(t, x) { return t + f(x); }
@@ -83,14 +83,16 @@ function rand(min, max) {
   return Math.rand() * (max - min) + min;
 }
 rand(1,3);
-rand(0,400); // what we actually want
+rand(0,400); // what we actually use
 ```
 
-Stretch and shift
+Stretch (*) and shift (+)
 
-+-----+        +-----+-----+
-0     1  --->  0     1     2     3
-                     +-----+-----+
+    Rand(0,1) -->  Rand(1,3)
+
+    +-----+        +-----+-----+
+    0     1   -->  0     1     2     3
+                         +-----+-----+
 
 # Neural Network time
 
@@ -98,7 +100,7 @@ Let's meet the the [cross entropy][1] cost function.
 
 The bit we use is the derivative for back-propagation in eqn (61)
 
-dC/dWj = 1/n * S xj (s(z)-y)
+dC/dW_j = 1/n * 𝛴 x_j (s(z)-y)
 
 # To be continued...
 
