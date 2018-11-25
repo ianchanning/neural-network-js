@@ -21,19 +21,18 @@ Game Over. Go to step 1.
 
 # Ha! I made it to slide 3
 
-# y = f(x) = 2x
+# 𝒚 = 𝒇(𝒙) = 2𝒙
 
 ```
  y
  ^
  |
-4|  +
+4|   +
 3|
 2| +
 1|
-0|+
- +---->x
-  012
+0+------>x
+ 0 1 2
 ```
 
 # Mathsy definitions
@@ -42,13 +41,13 @@ What's the mathsy name for:
 
 > I've got one set and I want to go to another set?
 
-    +-------+      +-------+
-    | 0 1 2 | ---> | 0 2 4 |
-    +-------+      +-------+
+    +-------+             +-------+
+    | 0 1 2 | -- f(x) --> | 0 2 4 |
+    +-------+             +-------+
 
 Mapping!
 
-# f(x) in JavaScript
+# 𝒇(𝒙) in JavaScript
 
 𝒚 = 𝒇(𝒙) = 2𝒙
 
