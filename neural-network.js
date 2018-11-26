@@ -95,10 +95,10 @@ const fff = (() => {
     /**
      * @example <circle ... onclick="..." />
      */
-    const clickelem = element => {
+    const clickelem = elem => {
       /* eslint no-console: "off" */
-      element.onclick = e => console.log(e.target.attributes)
-      return element
+      elem.onclick = e => console.log(e.target.attributes)
+      return elem
     }
     /**
      * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
