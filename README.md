@@ -22,17 +22,7 @@ This is a mashup of:
 
 [Funfunfunction](https://www.youtube.com/watch?v=anN2Ey37s-o), [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/) and [NN & DL course](http://neuralnetworksanddeeplearning.com)
 
-## Where it all goes wrong
-
-Talks that promise 'simple' go bad at slide two
-
-Slide 1: "This is going to be simple!"
-
-Slide 2: "This isn't simple"
-
-Game Over.
-
-## Ha! I made it to slide 3
+## Slight digression (it'll be worth it in the long run)
 
 Now I will actually start
 
@@ -72,6 +62,8 @@ What's the mathsy name for:
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
+
+## Mathsy definitions
 
 Mapping!
 
