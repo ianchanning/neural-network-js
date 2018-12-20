@@ -1,4 +1,4 @@
-# A Neural Network for the JavaScript programmer
+# A Neural Network from scratch in JavaScript 
 
 [![Screenshot](neural-network-screenshot.png)](neural-network-screenshot.png)
 
@@ -16,11 +16,13 @@ Each section here will be eventually turned into a slide
 
 ## The beginning
 
-Let's live code a neural network & a data visualization
+Let's live code a neural network and a data visualization
 
-This is a mashup of:
+Is inspired / blatantly copied from:
 
-[Funfunfunction](https://www.youtube.com/watch?v=anN2Ey37s-o), [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/) and [NN & DL course](http://neuralnetworksanddeeplearning.com)
+* [Funfunfunction NN playlist](https://www.youtube.com/watch?v=anN2Ey37s-o)
+* [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/)
+* [NN & DL course](http://neuralnetworksanddeeplearning.com)
 
 ## Slight digression (it'll be worth it in the long run)
 
