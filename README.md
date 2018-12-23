@@ -100,7 +100,7 @@ var xs = [1,1,1];
 var y  = xs.reduce(sum, 0); // 6
 ```
 
-## Lets get random
+## I want it to display random values
 
 Generate random test and training sets
 
@@ -121,7 +121,19 @@ Stretch (`*`) and shift (`+`)
     +-----+-----+        (Stretch by (3 - 1))
           +-----+-----+  (Shift by 1)
 
-## Neural Network time
+## I want to generate a set of random test values
+## I want to generate a set of random examples
+
+## I want to display these test values
+### I want to draw a circle
+### I want to draw the test values as circles on a graph
+### I want to separate these circles with a line
+### I want to colour the circles red or blue
+### I want to make the colour depend on which side of the line
+## I want to say whether my examples are red or blue
+## I want to make a guess based on x, y whether a circle is red or blue
+## Todo ...
+## I want to specify the cost function
 
 Let's meet the the [cross entropy][1] cost function.
 
