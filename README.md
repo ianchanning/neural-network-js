@@ -132,6 +132,8 @@ Stretch (`*`) and shift (`+`)
 ### I want to make the colour depend on which side of the line
 ## I want to say whether my examples are red or blue
 ## I want to make a guess based on x, y whether a circle is red or blue
+## I want to visualise the functions we're going to use to improve the guesses
+Ascii diagram of the perceptron (x, y) => sigmoid(x, y)
 ## Todo ...
 ## I want to specify the cost function
 
@@ -142,5 +144,11 @@ The bit we use is the derivative for back-propagation in eqn (61)
 $dC/dW_j = 1/n * {\sum_x} x_j (s(z)-y)$
 
 ## To be continued...
+## I want to explain why we get bias/over-fitting
+Here we loop around our examples just once.
+But for more complex problems we loop over the same examples thousands of times.
+When you say the same word a thousand times over you start to notice tiny details about the word that aren't relevant.
+e.g. conscience, that's actually con-science but that's totally irrelevant.
+Neural Networks have no other ideas about the world except for the examples we give them.
 
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
