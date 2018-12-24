@@ -4,7 +4,7 @@
   "description": "A Neural Network from scratch in JavaScript",
   "main": "neural-network.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "node_modules/.bin/eslint"
   },
   "repository": {
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/ianchanning/neural-network-js",
   "devDependencies": {
     "eslint": "^5.9.0",
-    "eslint-plugin-react": "^7.11.1"
+    "eslint-plugin-react": "^7.11.1",
+    "jest": "^23.6.0"
   }
 }

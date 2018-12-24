@@ -7,13 +7,15 @@
  * Step 2 is to port to ReasonML
  * @return object
  */
-const fff = (() => {
+const fff = () => {
   "use strict"
   const X_MAX = 400
   const Y_MAX = 400
   // usually called the training set
   const EXAMPLE_COUNT = 100000
   const TEST_COUNT = 200
+
+  const sum = (a,b) => a + b
 
   /**
    * Generate the required data specific for this network
@@ -24,16 +26,18 @@ const fff = (() => {
     /**
      * Generate random number between min and max
      *
-     * @param   {float} min
-     * @param   {float} max
-     * @returns {float} Random number
+     * @param   {number} min
+     * @param   {number} max
+     * @returns {number} Random number
      */
     const rand = (min, max) => Math.random() * (max - min) + min
     // random set of data points
-    const points = length => Array(length).fill().map(() => ({
-      x: rand(0, X_MAX),
-      y: rand(0, Y_MAX)
-    }))
+    const points = length => Array(length)
+      .fill(0)
+      .map((i) => ({
+        x: rand(0, X_MAX),
+        y: rand(0, Y_MAX)
+      }))
     // initial random weights
     const weights = {
       x: rand(-1, 1),
@@ -77,8 +81,8 @@ const fff = (() => {
      */
     const svg = () => {
       let svg = element("svg")
-      svg.setAttribute("height", Y_MAX)
-      svg.setAttribute("width", X_MAX)
+      svg.setAttribute("height", Y_MAX.toString())
+      svg.setAttribute("width", X_MAX.toString())
       return svg
     }
     /**
@@ -141,8 +145,8 @@ const fff = (() => {
      * For a binary classifier we should be using a sigmoid I think
      * But this appears to be using a ReLU and classifying as true if > 0
      *
-     * @param {integer} output Neuron value before activation function
-     * @returns {integer} Class of the example 0|1
+     * @param {number} output Neuron value before activation function
+     * @returns {number} Class of the example 0|1
      */
     const classifier = output => output > 0 ? 1 : 0
     /**
@@ -150,7 +154,7 @@ const fff = (() => {
      *
      * @param {object} a {x,y}
      * @param {object} b {x,y}
-     * @returns {float} Dot product value
+     * @returns {number} Dot product value
      */
     const dot = (a, b) => a.x * b.x + a.y * b.y
     // make a prediction given the weigts and a point
@@ -160,7 +164,7 @@ const fff = (() => {
      *
      * @param {object} weights {x,y} I think this is typically {w1, w2}
      * @param {object} point {x,y} Training example typically x1, x2
-     * @param {integer} actual 0|1 Correct label for the example
+     * @param {number} actual 0|1 Correct label for the example
      * @returns {object} {x,y} updated weights
      */
     const train = (weights, point, actual) => {
@@ -244,4 +248,5 @@ const fff = (() => {
   return {
     chartGym
   }
-})()
+}
+export { fff }
