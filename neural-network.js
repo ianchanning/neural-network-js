@@ -15,8 +15,6 @@ const fff = () => {
   const EXAMPLE_COUNT = 100000
   const TEST_COUNT = 200
 
-  const sum = (a,b) => a + b
-
   /**
    * Generate the required data specific for this network
    *
@@ -59,7 +57,8 @@ const fff = () => {
     return {
       weights,
       points,
-      examples
+      examples,
+      rand
     }
   }
 
@@ -243,10 +242,15 @@ const fff = () => {
   // note the connection with testPoints in the fill function
   const examplePoints = chartGen.examples(EXAMPLE_COUNT)
   const chartGym = gym(chartGen.weights, examplePoints)
-  document.getElementById("root").appendChild(fill(chartGen, chartGym, chart()))
+
+  // ignore document for testing
+  if (document.getElementById("root")) {
+    document.getElementById("root").appendChild(fill(chartGen, chartGym, chart()))
+  }
 
   return {
-    chartGym
+    chartGym,
+    chartGen
   }
 }
 export { fff }
