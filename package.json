@@ -22,7 +22,9 @@
     "url": "https://github.com/ianchanning/neural-network-js"
   },
   "babel": {
-    "plugins": ["transform-es2015-modules-commonjs"]
+    "plugins": [
+      "transform-es2015-modules-commonjs"
+    ]
   },
   "homepage": "https://github.com/ianchanning/neural-network-js",
   "devDependencies": {

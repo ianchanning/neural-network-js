@@ -1,18 +1,15 @@
 /* eslint no-unused-vars: "off" */
 /**
- * This is an experiment to see if I can recreate funfunfunctions machine-learning / back-propagation code
+ * This is an experiment to see if I can recreate funfunfunction's machine-learning / back-propagation code
  * @link https://www.youtube.com/watch?v=anN2Ey37s-o
- *
- * Step 1 is to recreate the JS code
- * Step 2 is to port to ReasonML
  * @return object
  */
-const fff = () => {
+const nn = () => {
   "use strict"
   const X_MAX = 400
   const Y_MAX = 400
   // usually called the training set
-  const EXAMPLE_COUNT = 100000
+  const EXAMPLE_COUNT = 10000 // set this to a low number for tests
   const TEST_COUNT = 200
 
   /**
@@ -131,33 +128,54 @@ const fff = () => {
    * @param {array} examples [{x,y}] Training set examples
    * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
    */
-  const gym = (weights, examples) => {
+  const neuron = (weights, examples) => {
     /**
-     * Binary classifier
+     * Perceptron binary classifier / activation function
      *
      * TODO: Is this our activation function too?
-     * I think so - effectively for a ReLU we want to return output not one
+     * I think so, but this is purely for a perceptron
+     * (incorrect) I think so - effectively for a ReLU we want to return output not one
      * But we want a binary classifier
-     * Ah perhaps this is not the activation function
+     * (correct) Ah perhaps this is not the activation function
      * It just happens that we're assuming that the dot product will never be less zero?
-     * Or maybe this is a combination of the activation function and the classifier
-     * For a binary classifier we should be using a sigmoid I think
-     * But this appears to be using a ReLU and classifying as true if > 0
+     * (incorrect) Or maybe this is a combination of the activation function and the classifier
+     * (incorrect) For a binary classifier we should be using a sigmoid I think
+     * (incorrect) But this appears to be using a ReLU and classifying as true if > 0
      *
-     * @param {number} output Neuron value before activation function
+     * this is how the output of a perceptron is calculated
+     * Perceptron is a the most basic form of a neuron
+     * Next we use sigmoid
+     * Then we use ReLU
+     *
+     *          | 0 if input <= threshold
+     * output = |
+     *          | 1 if input > threshold
+     *
+     * bias = -threshold
+     *
+     *          | 0 if input + bias <= 0
+     * output = |
+     *          | 1 if input + bias > 0
+     *
+     * @param {number} input Neuron value before activation function
      * @returns {number} Class of the example 0|1
      */
-    const classifier = output => output > 0 ? 1 : 0
+    const activation = input => input <= 0 ? 0 : 1
     /**
-     * Matrix dot product
+     * 1D matrix multiplication / vector dot product
      *
-     * @param {object} a {x,y}
-     * @param {object} b {x,y}
+     * @param {object} a {x,y} Vector with two elements
+     * @param {object} b {x,y} Vector with two elements
      * @returns {number} Dot product value
      */
     const dot = (a, b) => a.x * b.x + a.y * b.y
-    // make a prediction given the weigts and a point
-    const prediction = (weights, point) => classifier(dot(weights, point))
+    /**
+     * make a prediction given the weigts and a point
+     *
+     * @param {array} weights {x,y} weights matrix (just a 2D vector)
+     * @param {array} point {x,y}
+     */
+    const prediction = (weights, point) => activation(dot(weights, point))
     /**
      * Single training step
      *
@@ -219,7 +237,7 @@ const fff = () => {
     }
   }
 
-  const fill = (generator, gym, chart) => {
+  const draw = (generator, neuron, chart) => {
     const colours = ["red", "blue"]
     const testPoints = generator.points(TEST_COUNT)
     const svg = chart.svg()
@@ -227,7 +245,7 @@ const fff = () => {
       chart.clickelem(chart.circle(
         point,
         5,
-        colours[gym.prediction(gym.trainedWeights, point)]
+        colours[neuron.prediction(neuron.trainedWeights, point)]
       ))
     ))
     testPoints.map(point => svg.appendChild(
@@ -239,18 +257,20 @@ const fff = () => {
   }
 
   const chartGen = generator()
-  // note the connection with testPoints in the fill function
+  // note the connection with testPoints in the draw function
   const examplePoints = chartGen.examples(EXAMPLE_COUNT)
-  const chartGym = gym(chartGen.weights, examplePoints)
+  const chartNeuron = neuron(chartGen.weights, examplePoints)
 
   // ignore document for testing
   if (document.getElementById("root")) {
-    document.getElementById("root").appendChild(fill(chartGen, chartGym, chart()))
+    document.getElementById("root").appendChild(
+      draw(chartGen, chartNeuron, chart())
+    )
   }
 
   return {
-    chartGym,
+    chartNeuron,
     chartGen
   }
 }
-export { fff }
+export { nn }

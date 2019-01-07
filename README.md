@@ -1,4 +1,4 @@
-# A Neural Network from scratch in JavaScript 
+# A Neural Network from scratch in JavaScript
 
 [![Screenshot](neural-network-screenshot.png)](neural-network-screenshot.png)
 
@@ -16,19 +16,13 @@ Each section here will be eventually turned into a slide
 
 ## The beginning
 
-Let's live code a neural network and a data visualization
+Let's generate some random data, visualize it and train a neuron to classify it
 
-Is inspired / blatantly copied from:
+> Young man, in mathematics you don't understand things. You just get used to them.
+> — John Von Neumann
 
-* [Funfunfunction NN playlist](https://www.youtube.com/watch?v=anN2Ey37s-o)
-* [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/)
-* [NN & DL course](http://neuralnetworksanddeeplearning.com)
 
 ## Slight digression (it'll be worth it in the long run)
-
-Now I will actually start
-
-With a side-topic...
 
 JavaScript's `map` and `reduce` functions in maths
 
@@ -106,7 +100,7 @@ Generate random test and training sets
 
 ```javascript
 function rand(min, max) {
-  return Math.rand() * (max - min) + min;
+  return Math.random() * (max - min) + min;
 }
 rand(1,3);
 rand(0,400); // what we actually use
@@ -133,6 +127,38 @@ Stretch (`*`) and shift (`+`)
 ## I want to say whether my examples are red or blue
 ## I want to make a guess based on x, y whether a circle is red or blue
 ## I want to visualise the functions we're going to use to improve the guesses
+## A neural network of one neuron
+
+> An Englishman, even if he is alone, forms an orderly queue of one
+> - George Mikes
+
+We're going to simplify our network down to just one neuron
+
+So it's not really a network, but I won't tell if you don't
+
+          w1  +----------------------+
+     x1 ------|               |      |
+          w2  | z = w . x + b | g(z) |----> y
+     x2 ------|               |      |
+              +----------------------+
+
+### I want to multiply 2 2D single row / column matrices
+
+Matrix multiplication / dot product
+
+    w . x = [w1 w2]|x1|
+                   |x2|
+
+```javascript
+function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
+```
+
+## Activation function
+
+`g` is our 'activation' function
+
+### Perceptron
+### Sigmoid neuron
 Ascii diagram of the perceptron (x, y) => sigmoid(x, y)
 ## Todo ...
 ## I want to specify the cost function
@@ -151,4 +177,19 @@ When you say the same word a thousand times over you start to notice tiny detail
 e.g. conscience, that's actually con-science but that's totally irrelevant.
 Neural Networks have no other ideas about the world except for the examples we give them.
 
+## The end
+
+> implementing it myself from scratch was the most important
+> — [Andrej Karpathy talking to Andrew Ng][2]
+
+> What I cannot create, I do not understand.
+> — Richard Feynman
+
+Inspired / blatantly copied from:
+
+* [Funfunfunction NN playlist](https://www.youtube.com/watch?v=anN2Ey37s-o)
+* [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/)
+* [NN & DL course](http://neuralnetworksanddeeplearning.com)
+
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
+[2]: https://www.youtube.com/watch?v=_au3yw46lcg
