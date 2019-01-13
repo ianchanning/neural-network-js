@@ -201,8 +201,26 @@ const nn = () => {
       //       In individual loop steps (m examples):
       //       dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m
       //       (equivalent of {point.x, point.y} * error for all examples)
-      //       dw /= m (it seems we miss the division here)
-      //       w -= alpha * dw
+      //       dw = dw / m (it seems we miss the division here)
+      //       w = w - alpha * dw
+      //
+      //       Viewing the Logistic Regression Cost Function video
+      //       He has a difference in terminology between
+      //       Loss (error) function - 1 example
+      //       Cost function - avg. of m examples
+      //
+      //       Err, this is almost certainly Logistic regression backprop
+      //
+      //       z = w . x + b
+      //       a = s(z)
+      //       dz = dL/dz = a - y
+      //       dw1 = dL/dw1 = x1 * dz
+      //       dw2 = dL/dw2 = x2 * dz
+      //
+      //       Oh oh, it's possibly not,
+      //       it looks like the learning algorithm for a single perceptron
+      //       @link https://en.wikipedia.org/wiki/Perceptron#Learning_algorithm
+      //
       // See also @link http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
       //
       // Comparing to my notes it seems like we calculate -error (or -dZ)

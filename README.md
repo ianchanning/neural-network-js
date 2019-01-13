@@ -21,6 +21,15 @@ Let's generate some random data, visualize it and train a neuron to classify it
 > Young man, in mathematics you don't understand things. You just get used to them.
 > — John Von Neumann
 
+## Inspired / blatantly copied from
+
+* [Funfunfunction NN playlist][3] (but it's missing maths)
+* [deeplearning.ai week 2][4] (code isn't open, filling in blanks)
+* [NN & DL course][5] (no code)
+
+So I want to try and give some respect to the code & the maths
+
+I'm going to sneak some functional programming in
 
 ## Slight digression (it'll be worth it in the long run)
 
@@ -132,42 +141,101 @@ Stretch (`*`) and shift (`+`)
 > An Englishman, even if he is alone, forms an orderly queue of one
 > - George Mikes
 
-We're going to simplify our network down to just one neuron
+Simplify network down to one neuron
 
-So it's not really a network, but I won't tell if you don't
+Neurons act independently so can scale up process to a network
 
-          w1  +----------------------+
-     x1 ------|               |      |
-          w2  | z = w . x + b | g(z) |----> y
-     x2 ------|               |      |
-              +----------------------+
+          w1  +--------------------------+
+     x1 ------|               |          |
+          w2  | z = w . x + b | a = g(z) |----> ~y
+     x2 ------|               |          |
+              +--------------------------+
 
-### I want to multiply 2 2D single row / column matrices
+`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
 
-Matrix multiplication / dot product
+`g` is our 'activation' function
+
+## I want to describe a neuron firing
+
+Originally called a [perceptron][6], but later changed to a neuron
+
+Initial code will be for a perceptron, then we'll upgrade to a neuron
+
+Perceptron 'fires' when inputs reach a threshold
+
+                 | 0 if w . x <= threshold
+    activation = |
+                 | 1 if w . x > threshold
+
+Subtract threshold from both sides and call it 'bias'
+
+    bias = -threshold
+    
+                 | 0 if w . x + bias <= 0
+    activation = |
+                 | 1 if w . x + bias > 0
+
+     a
+     ^
+    1|     +---+
+     |     |
+    0| +---+
+     +----------> z
+           0
+
+### A bit confusing, let's see some code
+
+if then, else...
+
+```javascript
+// z = w . x + bias
+// a = g(z)
+function activation(z) {return (z <= 0) ? 0 : 1;}
+// if (z <= 0) return 0; else return 1;
+```
+
+Easiest function you can write --> basis for all AI
+
+Someone somewhere is having a laugh
+
+It gets more complex, but all advances are tweaks on this
+
+### I want to multiply two single row / column matrices
+
+Total the inputs using vector dot product / weighted sum
 
     w . x = [w1 w2]|x1|
                    |x2|
+
+In code a vector is an array / list
 
 ```javascript
 function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
 ```
 
-## Activation function
+When scaling to a network change vectors to matrices (2D array)
 
-`g` is our 'activation' function
-
-### Perceptron
 ### Sigmoid neuron
-Ascii diagram of the perceptron (x, y) => sigmoid(x, y)
+
+Smooth curved perceptron
+
+       a                 a
+       ^                 ^
+      1|     +---+      1|        ---+
+       |     |           |       /
+    1/2|     |        1/2|      /
+       |     |           |     /
+      0| +---+          0| +--- 
+       +----------> z    +----------> z
+             0                  0     
 ## Todo ...
 ## I want to specify the cost function
 
 Let's meet the the [cross entropy][1] cost function.
 
-The bit we use is the derivative for back-propagation in eqn (61)
+The bit we use is the derivative for back-propagation in eqn (61) 
 
-$dC/dW_j = 1/n * {\sum_x} x_j (s(z)-y)$
+$dC/dW_j = 1/n * {\sum_x} x_j (g(z)-y)$
 
 ## To be continued...
 ## I want to explain why we get bias/over-fitting
@@ -177,19 +245,47 @@ When you say the same word a thousand times over you start to notice tiny detail
 e.g. conscience, that's actually con-science but that's totally irrelevant.
 Neural Networks have no other ideas about the world except for the examples we give them.
 
+## In summary
+
+Generated random set of training and test data that we displayed on a graph for testing
+
+Split the points on the graph using an abritrary line (why? back propagation needs linear separation)
+
+Used a perceptron with an activation function and back propagation algorithm
+
+Trained this perceptron to adjust two weights that then colour the test points depending on which side of the line
+
+This is one step of gradient descent
+
+'Improved' this with a sigmoid activation function and it's differentiated back propagation.
+
+
 ## The end
 
 > implementing it myself from scratch was the most important
-> — [Andrej Karpathy talking to Andrew Ng][2]
+> — [Andrej Karpathy talking to Andrew Ng][2] (2018)
+
+... 
 
 > What I cannot create, I do not understand.
-> — Richard Feynman
+> — [Richard Feynman][8] (1988)
+
+... 
+
+> What you really want is to feel every element (and the connections between them) in your bones.
+> — [Michael Nielsen][7] (2019)
 
 Inspired / blatantly copied from:
 
-* [Funfunfunction NN playlist](https://www.youtube.com/watch?v=anN2Ey37s-o)
-* [deeplearning.ai week 2](https://www.coursera.org/learn/neural-networks-deep-learning/)
-* [NN & DL course](http://neuralnetworksanddeeplearning.com)
+* [Funfunfunction NN playlist][3]
+* [deeplearning.ai week 2][4]
+* [NN & DL course][5]
 
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
 [2]: https://www.youtube.com/watch?v=_au3yw46lcg
+[3]: https://www.youtube.com/watch?v=anN2Ey37s-o
+[4]: https://www.coursera.org/learn/neural-networks-deep-learning/
+[5]: http://neuralnetworksanddeeplearning.com
+[6]: https://en.wikipedia.org/wiki/Perceptron
+[7]: http://cognitivemedium.com/srs-mathematics
+[8]: https://en.wikiquote.org/wiki/Richard_Feynman
