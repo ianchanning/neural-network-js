@@ -1,17 +1,15 @@
-# Slides
-
 % A Neural Network for the JavaScript programmer
 % Ian Channing
 % November 25, 2018
 
-## The beginning
+# The beginning
 
 Let's generate some random data, visualize it and train a neuron to classify it
 
 > Young man, in mathematics you don't understand things. You just get used to them.
 > — John Von Neumann
 
-## Inspired / blatantly copied from
+# Inspired / blatantly copied from
 
 * [Funfunfunction NN playlist][3] (but it's missing maths)
 * [deeplearning.ai week 2][4] (code isn't open, filling in blanks)
@@ -21,13 +19,13 @@ So I want to try and give some respect to the code & the maths
 
 I'm going to sneak some functional programming in
 
-## Slight digression (it'll be worth it in the long run)
+# Slight digression (it'll be worth it in the long run)
 
 JavaScript's `map` and `reduce` functions in maths
 
 Reduce the gap between maths and code
 
-## $y = f(x) = 2x$
+# $y = f(x) = 2x$
 
 Still with me?
 
@@ -43,7 +41,7 @@ Let's draw a graph
     0 +------> x
       0 1 2
 
-## Mathsy definitions
+# Mathsy definitions
 
 This is actually University level maths - Set Theory.
 
@@ -58,13 +56,13 @@ What's the mathsy name for:
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
 
-## Mathsy definitions
+# Mathsy definitions
 
 Mapping!
 
 **Still with me?**
 
-## $f(x)$ in JavaScript
+# $f(x)$ in JavaScript
 
 $y = f(x) = 2x$
 
@@ -76,7 +74,7 @@ var xs = [0,1,2]; // want output [0,2,4]
 var ys = xs.map(f); // [0,2,4]
 ```
 
-## 2 + 2 + 2
+# 2 + 2 + 2
 
 $y = {\sum} f(x) = {\sum} 2x$
 
@@ -93,7 +91,7 @@ var xs = [1,1,1];
 var y  = xs.reduce(sum, 0); // 6
 ```
 
-## I want it to display random values
+# I want it to display random values
 
 Generate random test and training sets
 
@@ -114,19 +112,19 @@ Stretch (`*`) and shift (`+`)
     +-----+-----+        (Stretch by (3 - 1))
           +-----+-----+  (Shift by 1)
 
-## I want to generate a set of random test values
-## I want to generate a set of random examples
+# I want to generate a set of random test values
+# I want to generate a set of random examples
 
-## I want to display these test values
-### I want to draw a circle
-### I want to draw the test values as circles on a graph
-### I want to separate these circles with a line
-### I want to colour the circles red or blue
-### I want to make the colour depend on which side of the line
-## I want to say whether my examples are red or blue
-## I want to make a guess based on x, y whether a circle is red or blue
-## I want to visualise the functions we're going to use to improve the guesses
-## A neural network of one neuron
+# I want to display these test values
+## I want to draw a circle
+## I want to draw the test values as circles on a graph
+## I want to separate these circles with a line
+## I want to colour the circles red or blue
+## I want to make the colour depend on which side of the line
+# I want to say whether my examples are red or blue
+# I want to make a guess based on x, y whether a circle is red or blue
+# I want to visualise the functions we're going to use to improve the guesses
+# A neural network of one neuron
 
 > An Englishman, even if he is alone, forms an orderly queue of one
 > - George Mikes
@@ -145,7 +143,7 @@ Neurons act independently so can scale up process to a network
 
 `g` is our 'activation' function
 
-## I want to describe a neuron firing
+# I want to describe a neuron firing
 
 Originally called a [perceptron][6], but later changed to a neuron
 
@@ -160,7 +158,7 @@ Perceptron 'fires' when inputs reach a threshold
 Subtract threshold from both sides and call it 'bias'
 
     bias = -threshold
-    
+
                  | 0 if w . x + bias <= 0
     activation = |
                  | 1 if w . x + bias > 0
@@ -173,7 +171,7 @@ Subtract threshold from both sides and call it 'bias'
      +----------> z
            0
 
-### A bit confusing, let's see some code
+## A bit confusing, let's see some code
 
 if then, else...
 
@@ -190,7 +188,7 @@ Someone somewhere is having a laugh
 
 It gets more complex, but all advances are tweaks on this
 
-### I want to multiply two single row / column matrices
+## I want to multiply two single row / column matrices
 
 Total the inputs using vector dot product / weighted sum
 
@@ -205,7 +203,7 @@ function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
 
 When scaling to a network change vectors to matrices (2D array)
 
-### Sigmoid neuron
+## Sigmoid neuron
 
 Smooth curved perceptron
 
@@ -215,27 +213,27 @@ Smooth curved perceptron
        |     |           |       /
     1/2|     |        1/2|      /
        |     |           |     /
-      0| +---+          0| +--- 
+      0| +---+          0| +---
        +----------> z    +----------> z
-             0                  0     
-## Todo ...
-## I want to specify the cost function
+             0                  0
+# Todo ...
+# I want to specify the cost function
 
 Let's meet the the [cross entropy][1] cost function.
 
-The bit we use is the derivative for back-propagation in eqn (61) 
+The bit we use is the derivative for back-propagation in eqn (61)
 
 $dC/dW_j = 1/n * {\sum_x} x_j (g(z)-y)$
 
-## To be continued...
-## I want to explain why we get bias/over-fitting
+# To be continued...
+# I want to explain why we get bias/over-fitting
 Here we loop around our examples just once.
 But for more complex problems we loop over the same examples thousands of times.
 When you say the same word a thousand times over you start to notice tiny details about the word that aren't relevant.
 e.g. conscience, that's actually con-science but that's totally irrelevant.
 Neural Networks have no other ideas about the world except for the examples we give them.
 
-## In summary
+# In summary
 
 Generated random set of training and test data that we displayed on a graph for testing
 
@@ -250,17 +248,17 @@ This is one step of gradient descent
 'Improved' this with a sigmoid activation function and it's differentiated back propagation.
 
 
-## The end
+# The end
 
 > implementing it myself from scratch was the most important
 > — [Andrej Karpathy talking to Andrew Ng][2] (2018)
 
-... 
+...
 
 > What I cannot create, I do not understand.
 > — [Richard Feynman][8] (1988)
 
-... 
+...
 
 > What you really want is to feel every element (and the connections between them) in your bones.
 > — [Michael Nielsen][7] (2019)
