@@ -4,21 +4,44 @@
 
 # The beginning
 
-Let's generate some random data, visualize it and train a neuron to classify it
-
 > Young man, in mathematics you don't understand things. You just get used to them.
 > — John Von Neumann
 
+Let's generate some random data, visualize it and train a neuron to classify it
+
 # Inspired / blatantly copied from
 
-* [Funfunfunction NN playlist][3] (but it's missing maths)
-* [deeplearning.ai week 2][4] (code isn't open, filling in blanks)
-* [NN & DL course][5] (no code)
+[Funfunfunction NN playlist][3] ... but it's missing maths
+
+[deeplearning.ai week 2][4] ... but code isn't open, filling in blanks
+
+[NN & DL course][5] ... but no code
 
 So I want to try and give some respect to the code & the maths
 
-I'm going to sneak some functional programming in
+# I want it to display random values
 
+Generate random test and training sets
+
+```javascript
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
+rand(1,3);
+rand(0,400); // x, y range for our graph
+```
+
+Stretch (`*`) and shift (`+`)
+
+    rand(0,1) -->  rand(1,3)
+
+    +-----+
+    +-----+-----+        (Stretch by (3 - 1))
+          +-----+-----+  (Shift by 1)
+    0     1     2     3
+
+# I want to generate a set of random test values
+# I want to generate a set of random examples
 # Slight digression (it'll be worth it in the long run)
 
 JavaScript's `map` and `reduce` functions in maths
@@ -26,8 +49,6 @@ JavaScript's `map` and `reduce` functions in maths
 Reduce the gap between maths and code
 
 # $y = f(x) = 2x$
-
-Still with me?
 
 Let's draw a graph
 
@@ -45,8 +66,6 @@ Let's draw a graph
 
 This is actually University level maths - Set Theory.
 
-But I'll try anyway.
-
 What's the mathsy name for:
 
 > I've got one 'set' and I want to go to another 'set'?
@@ -60,17 +79,14 @@ What's the mathsy name for:
 
 Mapping!
 
-**Still with me?**
-
 # $f(x)$ in JavaScript
 
 $y = f(x) = 2x$
 
+
 ```javascript
 function f(x) {return 2 * x;}
-// could have called it 'double'
-// function double(x) {return 2 * x;}
-var xs = [0,1,2]; // want output [0,2,4]
+var xs = [0,1,2];
 var ys = xs.map(f); // [0,2,4]
 ```
 
@@ -91,36 +107,13 @@ var xs = [1,1,1];
 var y  = xs.reduce(sum, 0); // 6
 ```
 
-# I want it to display random values
-
-Generate random test and training sets
-
-```javascript
-function rand(min, max) {
-  return Math.random() * (max - min) + min;
-}
-rand(1,3);
-rand(0,400); // what we actually use
-```
-
-Stretch (`*`) and shift (`+`)
-
-    rand(0,1) -->  rand(1,3)
-
-    0     1     2     3
-    +-----+
-    +-----+-----+        (Stretch by (3 - 1))
-          +-----+-----+  (Shift by 1)
-
-# I want to generate a set of random test values
-# I want to generate a set of random examples
 
 # I want to display these test values
-## I want to draw a circle
-## I want to draw the test values as circles on a graph
-## I want to separate these circles with a line
-## I want to colour the circles red or blue
-## I want to make the colour depend on which side of the line
+# I want to draw a circle
+# I want to draw the test values as circles on a graph
+# I want to separate these circles with a line
+# I want to colour the circles red or blue
+# I want to make the colour depend on which side of the line
 # I want to say whether my examples are red or blue
 # I want to make a guess based on x, y whether a circle is red or blue
 # I want to visualise the functions we're going to use to improve the guesses
@@ -143,11 +136,19 @@ Neurons act independently so can scale up process to a network
 
 `g` is our 'activation' function
 
-# I want to describe a neuron firing
+# Perceptron or neuron?
 
-Originally called a [perceptron][6], but later changed to a neuron
+Originally called a [perceptron][6]
 
-Initial code will be for a perceptron, then we'll upgrade to a neuron
+Changed to a neuron with the sigmoid activation function
+
+For us:
+
+1. Fully code perceptron
+2. Iterate to a neuron
+
+
+# I want to describe a perceptron firing
 
 Perceptron 'fires' when inputs reach a threshold
 
@@ -163,6 +164,9 @@ Subtract threshold from both sides and call it 'bias'
     activation = |
                  | 1 if w . x + bias > 0
 
+
+# A bit confusing, let's see some code
+
      a
      ^
     1|     +---+
@@ -170,8 +174,6 @@ Subtract threshold from both sides and call it 'bias'
     0| +---+
      +----------> z
            0
-
-## A bit confusing, let's see some code
 
 if then, else...
 
@@ -182,13 +184,11 @@ function activation(z) {return (z <= 0) ? 0 : 1;}
 // if (z <= 0) return 0; else return 1;
 ```
 
-Easiest function you can write --> basis for all AI
+Easiest function you can write &rarr; basis for all AI
 
 Someone somewhere is having a laugh
 
-It gets more complex, but all advances are tweaks on this
-
-## I want to multiply two single row / column matrices
+# I want to multiply two single row / column matrices
 
 Total the inputs using vector dot product / weighted sum
 
@@ -203,7 +203,11 @@ function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
 
 When scaling to a network change vectors to matrices (2D array)
 
-## Sigmoid neuron
+# I want to specify the cost function
+
+todo...
+
+# Sigmoid neuron
 
 Smooth curved perceptron
 
@@ -253,12 +257,10 @@ This is one step of gradient descent
 > implementing it myself from scratch was the most important
 > — [Andrej Karpathy talking to Andrew Ng][2] (2018)
 
-...
 
 > What I cannot create, I do not understand.
 > — [Richard Feynman][8] (1988)
 
-...
 
 > What you really want is to feel every element (and the connections between them) in your bones.
 > — [Michael Nielsen][7] (2019)
