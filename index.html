@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>A Neural Network in JavaScript</title>
+    <meta charset="utf-8"/>
   </head>
   <body>
     <h1>Bring on the machines</h1>
+    <!-- The JS is going to inject all the HTML in this root element -->
     <div id="root"></div>
+    <!-- 
+      for the tutorial, or 'normal' style JS
+      uncomment this section and comment out the module
+    -->
+    <script src="neural-network.scratch3.js"></script>
+    <script> 
+      nn();
+    </script>
+    <!-- 
+      The main script uses modern ES6 JavaScript
     <script type="module">
       import { nn } from "./neural-network.js"
       nn()
     </script>
+    -->
   </body>
 </html>

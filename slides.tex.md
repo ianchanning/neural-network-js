@@ -1,23 +1,86 @@
-% A Neural Network for the JavaScript programmer
-% Ian Channing
-% November 25, 2018
+% A Neural Network from scratch in JavaScript
+% Ian Channing <https://github.com/ianchanning/neural-network-js>
+% February 12, 2019
+
+# My background
+
+Maths and Computer Science at Imperial, London
+
+JavaScript / React for Imec
+
+All AI knowledge from online courses (In Andrew Ng we trust)
 
 # The beginning
 
-> Young man, in mathematics you don't understand things. You just get used to them.
-> — John Von Neumann
+> What I cannot create, I do not understand.
+>
+> — Richard Feynman [[8][8]] (1988)
 
 Let's generate some random data, visualize it and train a neuron to classify it
 
 # Inspired / blatantly copied from
 
-[Funfunfunction NN playlist][3] ... but it's missing maths
+Funfunfunction NN playlist [[3][3]]
 
-[deeplearning.ai week 2][4] ... but code isn't open, filling in blanks
+... but it's missing maths
 
-[NN & DL course][5] ... but no code
+deeplearning.ai week 2 [[4][4]]
 
-So I want to try and give some respect to the code & the maths
+... but code isn't open, filling in blanks
+
+Neural Networks & Deep Learning course [[5][5]] 
+
+... but no code
+
+Aim: respect the code & the maths
+
+# Get ourselves setup
+
+Install VS Code <https://code.visualstudio.com>
+
+Download & extract the zip <https://github.com/ianchanning/neural-network-js>
+
+Open `index.html`
+
+Open Browser tools (F12)
+
+# Start the coding
+
+```html
+<script src="neural-network.skeleton.js"></script>
+<script> 
+  nn();
+</script>
+```
+
+Wrap code inside a function to avoid evil global scope [[9][9]]
+
+```javascript
+function nn() {
+  // all your var belong to us
+}
+```
+
+# Skeleton
+
+The outline of what we're going to produce
+
+```javascript
+// data
+function generator() {}
+
+// SVG chart elements
+function chart() {}
+
+// perceptron / neuron
+function neuron() {}
+
+// generator + neuron + chart
+function build() {}
+
+// draw the chart to root `<div>`
+function draw() {}
+```
 
 # I want it to display random values
 
@@ -40,17 +103,17 @@ Stretch (`*`) and shift (`+`)
           +-----+-----+  (Shift by 1)
     0     1     2     3
 
-# I want to generate a set of random test values
-# I want to generate a set of random examples
-# Slight digression (it'll be worth it in the long run)
+# Slight digression (humour me)
 
-JavaScript's `map` and `reduce` functions in maths
+Code <3 Maths
+
+JavaScript's `map` functions in maths
 
 Reduce the gap between maths and code
 
-# $y = f(x) = 2x$
+# Let's draw a graph
 
-Let's draw a graph
+$y = f(x) = 2x$
 
       y
       ^
@@ -64,20 +127,32 @@ Let's draw a graph
 
 # Mathsy definitions
 
-This is actually University level maths - Set Theory.
-
 What's the mathsy name for:
 
-> I've got one 'set' and I want to go to another 'set'?
+*I've got one 'set' and I want to go to another 'set' using `f`?*
 
-     xs                 ys
+     xs (exes)          ys (whys)
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
 
+(This is actually University level maths - Set Theory)
+
+
 # Mathsy definitions
 
-Mapping!
+What's the mathsy name for:
+
+*I've got one 'set' and I want to go to another 'set' using `f`?*
+
+     xs (exes)          ys (whys)
+    +-------+          +-------+
+    | 0 1 2 | -- f --> | 0 2 4 |
+    +-------+          +-------+
+
+(This is actually University level maths - Set Theory)
+
+Mapping! `f` 'maps' `0,1,2` on to `0,2,4`
 
 # $f(x)$ in JavaScript
 
@@ -89,6 +164,138 @@ function f(x) {return 2 * x;}
 var xs = [0,1,2];
 var ys = xs.map(f); // [0,2,4]
 ```
+
+`map` is awesome. Kill all loops!
+
+# What's the point?
+
+Our graph will be made up of `{x, y}` points.
+
+One random point in JavaScript:
+
+```javascript
+var point = {
+  x: rand(0, 400),
+  y: rand(0, 400)
+};
+```
+
+# I want to generate a set of random test values
+
+Perhaps I should use a for loop? (never!)
+
+Generate an empty array and use that to generate our new set.
+
+```javascript
+function points(length) {
+  return Array(length)
+    .fill(0)
+    .map(function(i) {
+      return {x: rand(0, 400), y: rand(0, 400)};
+    });
+}
+```
+
+Mapping `[0,0,0] ---> [{x,y},{x,y},{x,y}]` (demo?)
+
+Make `rand` and `points` available, functions are passed as values
+
+```javascript
+return {rand, points};
+```
+
+# I want to display these test values
+
+Gonna need a graph mate, how does that SVG work again?
+
+Should've read CSS-Trick's excellent guide on SVG Charts [[10][10]]
+
+```xml
+<svg 
+  version="1.1" 
+  xmlns="http://www.w3.org/2000/svg" 
+  height="400" 
+  width="400"
+>
+  <circle cx="90" cy="192" r="4"></circle>
+</svg>
+```
+
+**Brain shift required: `(0,0)` is top left**
+
+# Putting that in JavaScript
+
+```javascript
+function chart(height, width) {
+  // <name xmlns="..."></name>
+  function element(name) {
+    var ns = "http://www.w3.org/2000/svg";
+    return document.createElementNS(ns, name);
+  }
+  // <svg ...></svg>
+  function svg() {
+    // JS note: svg() can access element()
+    // var s is private to svg()
+    var s = element("svg");
+    s.setAttribute("height", height);
+    s.setAttribute("width", width);
+    return s;
+  }
+}
+```
+
+# I want to draw the circle
+
+```javascript
+// centre is a point {x,y}
+// <circle cx="0" cy="0" r="4" fill="blue"></circle>
+function circle(centre, radius, colour) {
+  var c = element("circle");
+  c.setAttribute("cx", centre.x);
+  c.setAttribute("cy", centre.y);
+  c.setAttribute("r", radius);
+  c.setAttribute("fill", colour);
+  return c;
+}
+```
+
+Make `svg` and `circle` available, functions are passed as values
+
+```javascript
+return {svg, circle};
+```
+
+# I want to draw the test values as circles on a graph
+
+I smell a `map`. I want to map my test values onto the graph.
+
+```javascript
+function build(generator, chart) {
+  var mySvg = chart.svg();
+  generator.points(100).map(function(point) {
+    mySvg.appendChild(chart.circle(point, 4, "black"));
+  });
+  return mySvg;
+}
+
+function draw() {
+  ...
+  var svg = build(generator(), chart(400, 400));
+  document.getElementById("root").appendChild(svg);
+}
+```
+
+And... watch the magic
+
+# I want to separate these circles with a line
+# I want to colour the circles red or blue
+# I want to make the colour depend on which side of the line
+
+# I want to generate a set of random examples
+
+# More JavaScript maths
+
+JavaScript's `reduce` function
 
 # 2 + 2 + 2
 
@@ -108,12 +315,6 @@ var y  = xs.reduce(sum, 0); // 6
 ```
 
 
-# I want to display these test values
-# I want to draw a circle
-# I want to draw the test values as circles on a graph
-# I want to separate these circles with a line
-# I want to colour the circles red or blue
-# I want to make the colour depend on which side of the line
 # I want to say whether my examples are red or blue
 # I want to make a guess based on x, y whether a circle is red or blue
 # I want to visualise the functions we're going to use to improve the guesses
@@ -255,14 +456,15 @@ This is one step of gradient descent
 # The end
 
 > implementing it myself from scratch was the most important
+>
 > — [Andrej Karpathy talking to Andrew Ng][2] (2018)
 
-
-> What I cannot create, I do not understand.
-> — [Richard Feynman][8] (1988)
-
+> Young man, in mathematics you don't understand things. You just get used to them.
+>
+> — John Von Neumann
 
 > What you really want is to feel every element (and the connections between them) in your bones.
+>
 > — [Michael Nielsen][7] (2019)
 
 Inspired / blatantly copied from:
@@ -279,3 +481,5 @@ Inspired / blatantly copied from:
 [6]: https://en.wikipedia.org/wiki/Perceptron
 [7]: http://cognitivemedium.com/srs-mathematics
 [8]: https://en.wikiquote.org/wiki/Richard_Feynman
+[9]: http://shop.oreilly.com/product/9780596517748.do
+[10]: https://css-tricks.com/how-to-make-charts-with-svg/

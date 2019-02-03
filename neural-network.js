@@ -122,7 +122,7 @@ const nn = () => {
   }
 
   /**
-   * Neural Network
+   * Perceptron / Neuron
    *
    * @param {object} weights {x,y} Initial weights
    * @param {array} examples [{x,y}] Training set examples
@@ -255,7 +255,7 @@ const nn = () => {
     }
   }
 
-  const draw = (generator, neuron, chart) => {
+  const build = (generator, neuron, chart) => {
     const colours = ["red", "blue"]
     const testPoints = generator.points(TEST_COUNT)
     const svg = chart.svg()
@@ -274,21 +274,24 @@ const nn = () => {
     return svg
   }
 
-  const chartGen = generator()
-  // note the connection with testPoints in the draw function
-  const examplePoints = chartGen.examples(EXAMPLE_COUNT)
-  const chartNeuron = neuron(chartGen.weights, examplePoints)
-
-  // ignore document for testing
-  if (document.getElementById("root")) {
-    document.getElementById("root").appendChild(
-      draw(chartGen, chartNeuron, chart())
-    )
+  const draw = () => {
+    const chartGen = generator()
+    // note the connection with testPoints in the draw function
+    const examplePoints = chartGen.examples(EXAMPLE_COUNT)
+    const chartNeuron = neuron(chartGen.weights, examplePoints)
+    const svg = build(chartGen, chartNeuron, chart())
+    
+    // ignore document for testing
+    if (document.getElementById("root")) {
+      document.getElementById("root").appendChild(svg)
+    }
+  
+    return {
+      chartNeuron,
+      chartGen
+    }
   }
 
-  return {
-    chartNeuron,
-    chartGen
-  }
+  return draw()
 }
 export { nn }

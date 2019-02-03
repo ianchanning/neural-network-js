@@ -1,10 +1,33 @@
-/* eslint no-unused-vars: "off" */
-/**
- * This is an experiment to see if I can recreate funfunfunctions machine-learning / back-propagation code
- * @link https://www.youtube.com/watch?v=anN2Ey37s-o
- * @return object
- */
-const nn = () => {
-  "use strict"
+function nn() {
+  "use strict";
+  /**
+   * generating random data
+   * generating test and labelled training data
+   */
+  function generator() {
+  }
+
+  /**
+   * SVG chart elements
+   */
+  function chart() {
+  }
+
+  /**
+   * the bit we care about
+   */
+  function neuron() {
+  }
+
+  /**
+   * generator + neuron + chart
+   */
+  function build() {
+  }
+
+  /**
+   * draw the chart to the screen
+   */
+  function draw() {
+  }
 }
-export { nn }
