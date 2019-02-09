@@ -1,8 +1,8 @@
-% A Neural Network from scratch in JavaScript
+% A ~~Neural Network~~Neuron from scratch in JavaScript
 % Ian Channing <https://github.com/ianchanning/neural-network-js>
 % February 12, 2019
 
-# My background
+# My background (aka my biases)
 
 Maths and Computer Science at Imperial, London
 
@@ -16,7 +16,7 @@ All AI knowledge from online courses (In Andrew Ng we trust)
 >
 > — Richard Feynman [[8][8]] (1988)
 
-Let's generate some random data, visualize it and train a neuron to classify it
+Aim: generate data, visualize it, label it and train a neuron to classify it
 
 # Inspired / blatantly copied from
 
@@ -32,13 +32,13 @@ Neural Networks & Deep Learning course [[5][5]]
 
 ... but no code
 
-Aim: respect the code & the maths
-
 # Get ourselves setup
 
 Install VS Code <https://code.visualstudio.com>
 
 Download & extract the zip <https://github.com/ianchanning/neural-network-js>
+
+Run `npm install` (totally optional)
 
 Open `index.html`
 
@@ -46,6 +46,7 @@ Open Browser tools (F12)
 
 # Start the coding
 
+In `index.html`:
 ```html
 <script src="neural-network.skeleton.js"></script>
 <script> 
@@ -131,7 +132,7 @@ What's the mathsy name for:
 
 *I've got one 'set' and I want to go to another 'set' using `f`?*
 
-     xs (exes)          ys (whys)
+     xs "exes"          ys "whys"
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
@@ -271,57 +272,130 @@ I smell a `map`. I want to map my test values onto the graph.
 
 ```javascript
 function build(generator, chart) {
-  var mySvg = chart.svg();
+  var svg = chart.svg();
   generator.points(100).map(function(point) {
-    mySvg.appendChild(chart.circle(point, 4, "black"));
+    svg.appendChild(chart.circle(point, 4, "black"));
   });
-  return mySvg;
+  return svg;
 }
 
-function draw() {
-  ...
-  var svg = build(generator(), chart(400, 400));
-  document.getElementById("root").appendChild(svg);
-}
+// add to draw()
+var svg = build(generator(), chart(400, 400));
+document.getElementById("root").appendChild(svg);
 ```
 
-And... watch the magic
+And... we've got a visualization of our data
 
-# I want to separate these circles with a line
+
 # I want to colour the circles red or blue
-# I want to make the colour depend on which side of the line
 
-# I want to generate a set of random examples
-
-# More JavaScript maths
-
-JavaScript's `reduce` function
-
-# 2 + 2 + 2
-
-$y = {\sum} f(x) = {\sum} 2x$
-
-     x  2x Running total
-     1  2  2
-     1  2  4
-    +1 +2  6
-    -- --
-     3  6
+In `build()`, rather than black circles we can draw red or blue circles.
 
 ```javascript
-function sum(t, x) { return t + f(x); }
-var xs = [1,1,1];
-var y  = xs.reduce(sum, 0); // 6
+var colours = ["red", "blue"];
+var team = 1;
+...
+svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
+# I want to separate these circles with a line
+
+Time to racially discriminate our happy circles ...err "linearly separate" them. 
+
+We need a wall!
+
+Add this to `chart()`:
+```javascript
+// start, end are points {x,y}
+// <line x1="0" y1="0" x2="10" y2="10" fill="blue"></line>
+function line(start, end, colour) {
+  var l = element("line");
+  l.setAttribute("x1", start.x);
+  l.setAttribute("y1", start.y);
+  l.setAttribute("x2", end.x);
+  l.setAttribute("y2", end.y);
+  l.setAttribute("stroke", colour);
+  return l;
+}
+return {svg, circle, line};
+```
+
+# Build the wall! Build the wall!
+
+And `build()`:
+
+```javascript
+svg.appendChild(
+  chart.line({x: 0, y: 0}, {x: 400, y: 400}, "black")
+);
+```
+
+# I want to make the colour depend on which side of the line
+
+One side are the blues, and the other side are the reds. Go blues!
+
+Top half is for the blues, the reds get everything else.
+
+Now as the all-seeing-being we know how to label them. Reminder: SVG coordinates have (0,0) in the top left.
+
+In our `generator()`:
+
+```javascript
+// which side of the wall
+function team(point) {
+  return (point.x > point.y) ? 1 : 0;
+}
+```
+and in `build()` set the team dynamically:
+
+```javascript
+var team = generator.team(point);
+svg.appendChild(chart.circle(point, 4, colours[team]));
+```
+
+# I want to label my random examples
+
+Now we'll get our own slave labour / Amazon mechanical turk to label data for us.
+
+```javascript
+var labelledPoint = {
+  point: {x: 0, y: 1},
+  actual: ???
+};
+```
 
 # I want to say whether my examples are red or blue
+
+In `generator()`:
+
+```javascript
+// points is a set of {x,y} points
+function labeller(points) {
+  points.map(function(point) {
+    return {
+      point: point,
+      actual: team(point)
+    };
+  });
+}
+
+// labelled training data
+function examples(length) {
+  return labeller(points(length));
+}
+
+return {rand, points, team, examples};
+```
+
 # I want to make a guess based on x, y whether a circle is red or blue
-# I want to visualise the functions we're going to use to improve the guesses
+
+Time for the good stuff
+
 # A neural network of one neuron
 
 > An Englishman, even if he is alone, forms an orderly queue of one
-> - George Mikes
+>
+> — George Mikes
 
 Simplify network down to one neuron
 
@@ -337,17 +411,20 @@ Neurons act independently so can scale up process to a network
 
 `g` is our 'activation' function
 
+`w . x` is the dot product / weighted sum
+
 # Perceptron or neuron?
 
-Originally called a [perceptron][6]
+Originally called a perceptron [[6][6]]
 
-Changed to a neuron with the sigmoid activation function
+Changed to a neuron with the sigmoid activation function - (there's probably a better definition)
+
+Mathematical concepts different, but coding concepts similar
 
 For us:
 
 1. Fully code perceptron
-2. Iterate to a neuron
-
+2. Iterate to a neuron (if we get time)
 
 # I want to describe a perceptron firing
 
@@ -382,8 +459,9 @@ if then, else...
 // z = w . x + bias
 // a = g(z)
 function activation(z) {return (z <= 0) ? 0 : 1;}
-// if (z <= 0) return 0; else return 1;
 ```
+
+N.B. Our wall goes through zero so we don't need bias
 
 Easiest function you can write &rarr; basis for all AI
 
@@ -408,6 +486,8 @@ When scaling to a network change vectors to matrices (2D array)
 
 todo...
 
+# I want to adjust the weights to improve my guess
+
 # Sigmoid neuron
 
 Smooth curved perceptron
@@ -431,6 +511,29 @@ The bit we use is the derivative for back-propagation in eqn (61)
 $dC/dW_j = 1/n * {\sum_x} x_j (g(z)-y)$
 
 # To be continued...
+
+
+# More JavaScript maths
+
+JavaScript's `reduce` function
+
+# 2 + 2 + 2
+
+$y = {\sum} f(x) = {\sum} 2x$
+
+     x  2x Running total
+     1  2  2
+     1  2  4
+    +1 +2  6
+    -- --
+     3  6
+
+```javascript
+function sum(t, x) { return t + f(x); }
+var xs = [1,1,1];
+var y  = xs.reduce(sum, 0); // 6
+```
+
 # I want to explain why we get bias/over-fitting
 Here we loop around our examples just once.
 But for more complex problems we loop over the same examples thousands of times.
@@ -469,9 +572,9 @@ This is one step of gradient descent
 
 Inspired / blatantly copied from:
 
-* [Funfunfunction NN playlist][3]
-* [deeplearning.ai week 2][4]
-* [NN & DL course][5]
+* Funfunfunction NN playlist [[3][3]]
+* deeplearning.ai week 2 [[4][4]]
+* NN & DL course [[5][5]]
 
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
 [2]: https://www.youtube.com/watch?v=_au3yw46lcg

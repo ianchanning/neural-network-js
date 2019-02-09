@@ -17,6 +17,21 @@ pandoc -t beamer slides.tex.md -o slides.pdf --pdf-engine
 =xelatex
 ```
 
+Also don't edit the `slides.md`, edit the `slides.tex.md`, the TeXify Github app will update `slides.md`.
+
+### What's my goal?
+
+* Neural Networks aren't that hard? (but they are)
+* The core of Neural Networks isn't magic?
+* It's functions all the way down
+* Keeping the perspective of someone who is new 
+* The fundamental steps of Data Science
+* Hack at neurons
+* Get a fundamental understanding of Neural Networks
+* Get the intuition, the mental model
+* Respect the code and the maths
+* See inside the sausage factory
+
 ## Setup / pre-steps
 
 I also need to run `npm install` and install the ESLint plugin for VS Code.

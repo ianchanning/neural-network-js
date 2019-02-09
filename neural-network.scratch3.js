@@ -22,7 +22,27 @@ function nn() {
         });
     }
 
-    return {rand, points};
+    // which side of the wall
+    function team(point) {
+      return (point.x > point.y) ? 1 : 0;
+    }
+    
+    // points is a set of {x,y} points
+    function labeller(points) {
+      points.map(function(point) {
+        return {
+          point: point,
+          actual: team(point)
+        };
+      });
+    }
+
+    // labelled training data
+    function examples(length) {
+      return labeller(points(length));
+    }
+
+    return {rand, points, team, examples};
   }
 
   /**
@@ -56,7 +76,19 @@ function nn() {
       return c;
     }
 
-    return {svg, circle};
+    // start, end are points {x,y}
+    // <line x1="0" y1="0" x2="10" y2="10" fill="blue"></line>
+    function line(start, end, colour) {
+      var l = element("line");
+      l.setAttribute("x1", start.x);
+      l.setAttribute("y1", start.y);
+      l.setAttribute("x2", end.x);
+      l.setAttribute("y2", end.y);
+      l.setAttribute("stroke", colour);
+      return l;
+    }
+
+    return {svg, circle, line};
   }
 
   /**
@@ -69,11 +101,14 @@ function nn() {
    * generator + neuron + chart
    */
   function build(generator, chart) {
-    var mySvg = chart.svg();
+    var svg = chart.svg();
+    var colours = ["red", "blue"];
     generator.points(100).map(function(point) {
-      mySvg.appendChild(chart.circle(point, 4, "black"));
+      var team = generator.team(point);
+      svg.appendChild(chart.circle(point, 4, colours[team]));
     });
-    return mySvg;
+    svg.appendChild(chart.line({x: 0, y: 0}, {x: 400, y: 400}, "black"));
+    return svg;
   }
 
   /**
@@ -83,7 +118,9 @@ function nn() {
     var elem = document.createElement("p");
     elem.innerText = "(0,0)";
     document.getElementById("root").prepend(elem);
-    var svg = build(generator(), chart(400, 400));
+    var myGenerator = generator();
+    var myChart = chart(400, 400);
+    var svg = build(myGenerator, myChart);
     document.getElementById("root").appendChild(svg);
   }
 
