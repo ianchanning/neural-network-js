@@ -114,7 +114,7 @@ Reduce the gap between maths and code
 
 # Let's draw a graph
 
-<img src="/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
+<img src="/tutorial/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
 
       y
       ^
@@ -146,7 +146,7 @@ What's the mathsy name for:
 
 *I've got one 'set' and I want to go to another 'set' using `f`?*
 
-     xs (exes)          ys (whys)
+     xs "exes"          ys "whys"
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
@@ -155,9 +155,9 @@ What's the mathsy name for:
 
 Mapping! `f` 'maps' `0,1,2` on to `0,2,4`
 
-# <img src="/tex/7997339883ac20f551e7f35efff0a2b9.svg?invert_in_darkmode&sanitize=true" align=middle width=31.99783454999999pt height=24.65753399999998pt/> in JavaScript
+# <img src="/tutorial/tex/7997339883ac20f551e7f35efff0a2b9.svg?invert_in_darkmode&sanitize=true" align=middle width=31.99783454999999pt height=24.65753399999998pt/> in JavaScript
 
-<img src="/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
+<img src="/tutorial/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
 
 
 ```javascript
@@ -322,7 +322,7 @@ return {svg, circle, line};
 
 # Build the wall! Build the wall!
 
-And `build()`:
+And add this to `build()`:
 
 ```javascript
 svg.appendChild(
@@ -397,8 +397,6 @@ Time for the good stuff
 >
 > — George Mikes
 
-Simplify network down to one neuron
-
 Neurons act independently so can scale up process to a network
 
           w1  +--------------------------+
@@ -407,11 +405,13 @@ Neurons act independently so can scale up process to a network
      x2 ------|               |          |
               +--------------------------+
 
-`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
+`w . x` is the dot product / weighted sum
+
+`b` is the bias
 
 `g` is our 'activation' function
 
-`w . x` is the dot product / weighted sum
+`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
 
 # Perceptron or neuron?
 
@@ -508,7 +508,7 @@ Let's meet the the [cross entropy][1] cost function.
 
 The bit we use is the derivative for back-propagation in eqn (61)
 
-<img src="/tex/fb5baf039ce32affc118d796608fdc48.svg?invert_in_darkmode&sanitize=true" align=middle width=237.05711864999995pt height=24.657735299999988pt/>
+<img src="/tutorial/tex/fb5baf039ce32affc118d796608fdc48.svg?invert_in_darkmode&sanitize=true" align=middle width=237.05711864999995pt height=24.657735299999988pt/>
 
 # To be continued...
 
@@ -519,7 +519,7 @@ JavaScript's `reduce` function
 
 # 2 + 2 + 2
 
-<img src="/tex/1931ea285f03835bed05989c550c8dae.svg?invert_in_darkmode&sanitize=true" align=middle width=136.79980214999998pt height=24.657735299999988pt/>
+<img src="/tutorial/tex/1931ea285f03835bed05989c550c8dae.svg?invert_in_darkmode&sanitize=true" align=middle width=136.79980214999998pt height=24.657735299999988pt/>
 
      x  2x Running total
      1  2  2
