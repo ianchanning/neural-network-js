@@ -146,7 +146,7 @@ What's the mathsy name for:
 
 *I've got one 'set' and I want to go to another 'set' using `f`?*
 
-     xs (exes)          ys (whys)
+     xs "exes"          ys "whys"
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
@@ -322,7 +322,7 @@ return {svg, circle, line};
 
 # Build the wall! Build the wall!
 
-And `build()`:
+And add this to `build()`:
 
 ```javascript
 svg.appendChild(
@@ -397,8 +397,6 @@ Time for the good stuff
 >
 > — George Mikes
 
-Simplify network down to one neuron
-
 Neurons act independently so can scale up process to a network
 
           w1  +--------------------------+
@@ -407,11 +405,13 @@ Neurons act independently so can scale up process to a network
      x2 ------|               |          |
               +--------------------------+
 
-`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
+`w . x` is the dot product / weighted sum
+
+`b` is the bias
 
 `g` is our 'activation' function
 
-`w . x` is the dot product / weighted sum
+`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
 
 # Perceptron or neuron?
 
