@@ -2,9 +2,9 @@
 % Ian Channing <https://github.com/ianchanning/neural-network-js>
 % February 12, 2019
 
-# My background (aka my biases)
+# My background (biases)
 
-Maths and Computer Science at Imperial, London
+Maths and Computer Science at Imperial in London
 
 JavaScript / React for Imec
 
@@ -34,7 +34,7 @@ Neural Networks & Deep Learning course [[5][5]]
 
 # Get ourselves setup
 
-Install VS Code <https://code.visualstudio.com>
+Install VS Code (optional) <https://code.visualstudio.com>
 
 Download & extract the zip <https://github.com/ianchanning/neural-network-js>
 
@@ -48,17 +48,18 @@ Open Browser tools (F12)
 
 In `index.html`:
 ```html
-<script src="neural-network.skeleton.js"></script>
+<script src="tutorial/neural-network.skeleton.js"></script>
 <script> 
   nn();
 </script>
 ```
+In `tutorial/neural-network.skeleton.js`:
 
 Wrap code inside a function to avoid evil global scope [[9][9]]
 
 ```javascript
 function nn() {
-  // all your var belong to us
+  // all your var are belong to us
 }
 ```
 
@@ -92,7 +93,7 @@ function rand(min, max) {
   return Math.random() * (max - min) + min;
 }
 rand(1,3);
-rand(0,400); // x, y range for our graph
+rand(0,400); // x1, x2 range for our graph
 ```
 
 Stretch (`*`) and shift (`+`)
@@ -170,15 +171,12 @@ var ys = xs.map(f); // [0,2,4]
 
 # What's the point?
 
-Our graph will be made up of `{x, y}` points.
+Our graph will be made up of `[x1, x2]` points.
 
 One random point in JavaScript:
 
 ```javascript
-var point = {
-  x: rand(0, 400),
-  y: rand(0, 400)
-};
+var point = [rand(0, 400), rand(0, 400)];
 ```
 
 # I want to generate a set of random test values
@@ -192,12 +190,12 @@ function points(length) {
   return Array(length)
     .fill(0)
     .map(function(i) {
-      return {x: rand(0, 400), y: rand(0, 400)};
+      return [rand(0, 400), rand(0, 400)];
     });
 }
 ```
 
-Mapping `[0,0,0] ---> [{x,y},{x,y},{x,y}]` (demo?)
+Mapping `[0,0,0] ---> [[x1,x2],[x1,x2],[x1,x2]]` (demo?)
 
 Make `rand` and `points` available, functions are passed as values
 
@@ -248,12 +246,12 @@ function chart(height, width) {
 # I want to draw the circle
 
 ```javascript
-// centre is a point {x,y}
+// centre is a point [x1,x2]
 // <circle cx="0" cy="0" r="4" fill="blue"></circle>
 function circle(centre, radius, colour) {
   var c = element("circle");
-  c.setAttribute("cx", centre.x);
-  c.setAttribute("cy", centre.y);
+  c.setAttribute("cx", centre[0]);
+  c.setAttribute("cy", centre[1]);
   c.setAttribute("r", radius);
   c.setAttribute("fill", colour);
   return c;
@@ -278,8 +276,10 @@ function build(generator, chart) {
   });
   return svg;
 }
+```
 
-// add to draw()
+Add this to `draw()`:
+```javascript
 var svg = build(generator(), chart(400, 400));
 document.getElementById("root").appendChild(svg);
 ```
@@ -289,12 +289,12 @@ And... we've got a visualization of our data
 
 # I want to colour the circles red or blue
 
-In `build()`, rather than black circles we can draw red or blue circles.
+In `build()`, rather than black circles we can draw random red or blue circles.
 
 ```javascript
 var colours = ["red", "blue"];
-var team = 1;
 ...
+var team = Math.round(Math.random());
 svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
@@ -306,14 +306,14 @@ We need a wall!
 
 Add this to `chart()`:
 ```javascript
-// start, end are points {x,y}
+// start, end are points [x1,x2]
 // <line x1="0" y1="0" x2="10" y2="10" fill="blue"></line>
 function line(start, end, colour) {
   var l = element("line");
-  l.setAttribute("x1", start.x);
-  l.setAttribute("y1", start.y);
-  l.setAttribute("x2", end.x);
-  l.setAttribute("y2", end.y);
+  l.setAttribute("x1", start[0]);
+  l.setAttribute("y1", start[1]);
+  l.setAttribute("x2", end[0]);
+  l.setAttribute("y2", end[1]);
   l.setAttribute("stroke", colour);
   return l;
 }
@@ -322,11 +322,11 @@ return {svg, circle, line};
 
 # Build the wall! Build the wall!
 
-And add this to `build()`:
+Add this to `build()`:
 
 ```javascript
 svg.appendChild(
-  chart.line({x: 0, y: 0}, {x: 400, y: 400}, "black")
+  chart.line([0, 0], [400, 400], "black")
 );
 ```
 
@@ -343,7 +343,7 @@ In our `generator()`:
 ```javascript
 // which side of the wall
 function team(point) {
-  return (point.x > point.y) ? 1 : 0;
+  return (point[0] > point[1]) ? 1 : 0;
 }
 ```
 and in `build()` set the team dynamically:
@@ -355,11 +355,11 @@ svg.appendChild(chart.circle(point, 4, colours[team]));
 
 # I want to label my random examples
 
-Now we'll get our own slave labour / Amazon mechanical turk to label data for us.
+Get our own slave labour / Amazon Mechanical Turk [[11][11]] to label data for us.
 
 ```javascript
 var labelledPoint = {
-  point: {x: 0, y: 1},
+  point: [0, 1],
   actual: ???
 };
 ```
@@ -369,9 +369,9 @@ var labelledPoint = {
 In `generator()`:
 
 ```javascript
-// points is a set of {x,y} points
+// points is a set of [x1,x2] points
 function labeller(points) {
-  points.map(function(point) {
+  return points.map(function(point) {
     return {
       point: point,
       actual: team(point)
@@ -387,9 +387,11 @@ function examples(length) {
 return {rand, points, team, examples};
 ```
 
-# I want to make a guess based on x, y whether a circle is red or blue
+# I want to make a guess based on x1, x2 whether a circle is red or blue
 
 Time for the good stuff
+
+**Don't confuse x, y with x1, x2**
 
 # A neural network of one neuron
 
@@ -426,6 +428,34 @@ For us:
 1. Fully code perceptron
 2. Iterate to a neuron (if we get time)
 
+# I want to combine my inputs into one value
+
+Combine inputs into one value
+
+More important inputs have a bigger impact
+
+Pathways in the brain become stronger the more they are used (see Inner Game of Tennis)
+
+Weighted sum / dot product (1 row x 1 column)
+
+# I want to multiply 1 row matrix x 1 column matrix
+
+Total the inputs using vector dot product / weighted sum
+
+    w . x = [w1 w2]|x1|
+                   |x2|
+
+A vector in Python is a list, in JavaScript an array
+
+Add this to `neuron()`:
+
+```javascript
+// 2-D dot product only, [w1,w2], [x1,x2]
+function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
+```
+
+We can scale the dot product to as many elements as we want
+
 # I want to describe a perceptron firing
 
 Perceptron 'fires' when inputs reach a threshold
@@ -453,40 +483,221 @@ Subtract threshold from both sides and call it 'bias'
      +----------> z
            0
 
+N.B. Our line goes through zero so we don't need bias
+
 if then, else...
 
+Add this to `neuron()`:
 ```javascript
-// z = w . x + bias
+// z = dot(w, x) + bias (but no bias here)
 // a = g(z)
 function activation(z) {return (z <= 0) ? 0 : 1;}
 ```
-
-N.B. Our wall goes through zero so we don't need bias
 
 Easiest function you can write &rarr; basis for all AI
 
 Someone somewhere is having a laugh
 
-# I want to multiply two single row / column matrices
+# I want to start somewhere
 
-Total the inputs using vector dot product / weighted sum
+Initialise our weights to either 0 or small random values.
 
-    w . x = [w1 w2]|x1|
-                   |x2|
-
-In code a vector is an array / list
+Add `weights` to `generator()` and return
 
 ```javascript
-function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
+// experiment with (0,0) or rand(0,400), or rand(0,1)
+var weights = [rand(-1,1), rand(-1,1)];
+
+return {rand, points, team, examples, weights};
 ```
 
-When scaling to a network change vectors to matrices (2D array)
+# I want to my a first guess
 
-# I want to specify the cost function
+Make a prediction from our weights
 
-todo...
+In `neuron()`:
+
+```javascript
+// y = g(w . x + b)
+function prediction(w, x) {
+  return activation(dot(w,x));
+}
+```
+
+# I want to display my predictions
+
+Instead of our known `team` use our `prediction`.
+
+In `build()` replace:
+```javascript
+// var team = generator.team(point);
+var team = neuron.prediction(generator.weights, point);
+```
+
+Add `neuron` to `build()`:
+```javascript
+function build(generator, chart, neuron) {
+  // ...
+}
+```
+
+Create & pass neuron in `draw()`:
+```javascript
+myNeuron = neuron();
+var svg = build(myGenerator, myChart, myNeuron);
+```
+
+# I want to get a better feel for what the weights mean
+
+Change the initial `weights` to some random values and show the weights we're using.
+
+In `draw()` add this at the end:
+```javascript
+drawP("intial w: "+myGenerator.weights.join());
+```
+
+Which weights give the best predictions?
+
+# I want to specify how I can improve
+
+Define a loss/error function: a function we want to *minimise*
+
+How different our prediction was from the actual value
+
+```javascript
+function loss(y, prediction) {
+  return y - prediction;
+}
+```
 
 # I want to adjust the weights to improve my guess
+
+Feed the loss back into the weights
+
+```javascript
+function adjust(w, x, loss, i) {
+  return w[i] + loss * x[i];
+}
+```
+
+# I want to combine these into a training step 
+
+One small step for one example
+
+<https://en.wikipedia.org/wiki/Perceptron#Steps>
+
+```javascript
+// step 1: initialise weights w
+// step 2: for each example x with actual y
+function step(w, x, y) {
+  // step 2a: calculation actual output
+  var yhat = prediction(w, x);
+  // step 2b: update the weights for each x[i]
+  var l = loss(y, yhat);
+  return [
+    adjust(w, x, l, 0),
+    adjust(w, x, l, 1)
+  ];
+}
+```
+
+# I want to do a single step of training
+
+We can look at how the weights change step by step but I think it's overkill
+
+In `neuron()`, return the `step` function and then apply it in `build()`
+
+```javascript
+example = generator.examples(1);
+var weights = neuron.step(
+  generator.weights,
+  example[0].point,
+  example[0].actual
+);
+generator.points(100).map(function(point) {
+  var team = neuron.prediction(weights, point);
+```
+
+# One last digression
+
+More maths in JavaScript
+
+The `reduce` function
+
+# 2 + 2 + 2
+
+<img src="/tutorial/tex/1931ea285f03835bed05989c550c8dae.svg?invert_in_darkmode&sanitize=true" align=middle width=136.79980214999998pt height=24.657735299999988pt/>
+
+     x  2x Running total
+     1  2  2
+     1  2  4
+    +1 +2  6
+    -- --
+     3  6
+
+```javascript
+function sum(t, x) { return t + f(x); }
+var xs = [1,1,1];
+var y  = xs.reduce(sum, 0); // 6
+```
+
+(demo?)
+
+# I want to train using all examples
+
+`reduce` the examples down into a single set of trained weights
+
+Add this to `neuron()` and include it in the return value
+
+```javascript
+// intial weights w
+// labelled examples
+function train(w, examples) {
+  // wrapper function to work with reduce
+  function trainExample(w, example) {
+    return step(w, example.point, example.actual);
+  }
+  // repeatedly updates w and returns the trained w
+  return examples.reduce(trainExample, w);
+}
+
+return {prediction, train}
+```
+
+# I want to replace the guess with trained weights
+
+In `build()` add:
+```javascript
+var weights = neuron.train(
+  generator.weights,
+  generator.examples(100) // how many?
+);
+```
+
+Then replace:
+```javascript
+// var team = neuron.prediction(generator.weights, point);
+var team = neuron.prediction(weights, point);
+```
+
+Have we gotten any better at guessing?
+
+# I want to see what the trained weights are
+
+Draw another paragraph and put it in a function as we're repeating the steps
+
+Return the trained weights from `build()`:
+```javascript
+return {svg, weights};
+```
+
+Then in `draw()` replace:
+```javascript
+var myBuild = build(myGenerator, myChart, myNeuron);
+document.getElementById("root").appendChild(myBuild.svg);
+drawP("initial w: "+myGenerator.weights.join());
+drawP("trained w: "+myBuild.weights.join());
+```
 
 # Sigmoid neuron
 
@@ -512,27 +723,6 @@ The bit we use is the derivative for back-propagation in eqn (61)
 
 # To be continued...
 
-
-# More JavaScript maths
-
-JavaScript's `reduce` function
-
-# 2 + 2 + 2
-
-<img src="/tutorial/tex/1931ea285f03835bed05989c550c8dae.svg?invert_in_darkmode&sanitize=true" align=middle width=136.79980214999998pt height=24.657735299999988pt/>
-
-     x  2x Running total
-     1  2  2
-     1  2  4
-    +1 +2  6
-    -- --
-     3  6
-
-```javascript
-function sum(t, x) { return t + f(x); }
-var xs = [1,1,1];
-var y  = xs.reduce(sum, 0); // 6
-```
 
 # I want to explain why we get bias/over-fitting
 Here we loop around our examples just once.
@@ -586,3 +776,4 @@ Inspired / blatantly copied from:
 [8]: https://en.wikiquote.org/wiki/Richard_Feynman
 [9]: http://shop.oreilly.com/product/9780596517748.do
 [10]: https://css-tricks.com/how-to-make-charts-with-svg/
+[11]: https://www.mturk.com/
