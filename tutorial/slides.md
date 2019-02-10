@@ -12,11 +12,11 @@ All AI knowledge from online courses (In Andrew Ng we trust)
 
 # The beginning
 
-> What I cannot create, I do not understand.
+> Implementing it myself from scratch was the most important
 >
-> — Richard Feynman [[8][8]] (1988)
+> — Andrej Karpathy talking to Andrew Ng [[2][2]] (2018)
 
-Aim: generate data, visualize it, label it and train a neuron to classify it
+Aim: generate data, visualize it, label it and train a neuron to classify it.
 
 # Inspired / blatantly copied from
 
@@ -748,23 +748,21 @@ This is one step of gradient descent
 
 # The end
 
-> implementing it myself from scratch was the most important
+> What I cannot create, I do not understand.
 >
-> — [Andrej Karpathy talking to Andrew Ng][2] (2018)
+> — Richard Feynman [[8][8]] (1988)
+
+...
 
 > Young man, in mathematics you don't understand things. You just get used to them.
 >
 > — John Von Neumann
 
+...
+
 > What you really want is to feel every element (and the connections between them) in your bones.
 >
 > — [Michael Nielsen][7] (2019)
-
-Inspired / blatantly copied from:
-
-* Funfunfunction NN playlist [[3][3]]
-* deeplearning.ai week 2 [[4][4]]
-* NN & DL course [[5][5]]
 
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
 [2]: https://www.youtube.com/watch?v=_au3yw46lcg
