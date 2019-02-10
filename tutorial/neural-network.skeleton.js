@@ -1,8 +1,7 @@
 function nn() {
   "use strict";
   /**
-   * generating random data
-   * generating test and labelled training data
+   * data
    */
   function generator() {
   }
@@ -14,7 +13,7 @@ function nn() {
   }
 
   /**
-   * the bit we care about
+   * perceptron / neuron
    */
   function neuron() {
   }
@@ -26,8 +25,14 @@ function nn() {
   }
 
   /**
-   * draw the chart to the screen
+   * draw the chart to root `<div>`
    */
   function draw() {
+    function drawP(text) {
+      var elem = document.createElement("p");
+      elem.innerText = text;
+      document.getElementById("root").append(elem);  
+    }
+    drawP("(0,0)");
   }
 }

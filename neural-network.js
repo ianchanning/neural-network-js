@@ -30,13 +30,13 @@ const nn = () => {
     const points = length => Array(length)
       .fill(0)
       .map((i) => ({
-        x: rand(0, X_MAX),
-        y: rand(0, Y_MAX)
+        x1: rand(0, X_MAX),
+        x2: rand(0, Y_MAX)
       }))
     // initial random weights
     const weights = {
-      x: rand(-1, 1),
-      y: rand(-1, 1)
+      x1: rand(-1, 1),
+      x2: rand(-1, 1)
     }
     /**
      * we happen to know that this will classify out points correctly
@@ -44,7 +44,7 @@ const nn = () => {
      * here x/y are coordinates in a SVG/CSS style where top left is 0,0
      * the line is then effectively y = x
      */
-    const team = point => point.x > point.y ? 1 : 0
+    const team = point => point.x1 > point.x2 ? 1 : 0
     const labeller = examples => examples.map(
       point => ({point, actual: team(point)})
     )
@@ -82,12 +82,13 @@ const nn = () => {
       return svg
     }
     /**
+     * centre {x1,x2}
      * @example <circle cx="100" cy="100" r="5" />
      */
     const circle = (centre, radius, colour) => {
       let c = element("circle")
-      c.setAttribute("cx", centre.x)
-      c.setAttribute("cy", centre.y)
+      c.setAttribute("cx", centre.x1)
+      c.setAttribute("cy", centre.x2)
       c.setAttribute("r", radius)
       c.style.fill = colour
       return c
@@ -101,14 +102,15 @@ const nn = () => {
       return elem
     }
     /**
+     * start, end {x1,x2}
      * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
      */
     const line = (start, end, colour) => {
       let l = element("line")
-      l.setAttribute("x1", start.x)
-      l.setAttribute("y1", start.y)
-      l.setAttribute("x2", end.x)
-      l.setAttribute("y2", end.y)
+      l.setAttribute("x1", start.x1)
+      l.setAttribute("y1", start.x2)
+      l.setAttribute("x2", end.x1)
+      l.setAttribute("y2", end.x2)
       l.setAttribute("stroke", colour)
       return l
     }
@@ -124,8 +126,8 @@ const nn = () => {
   /**
    * Perceptron / Neuron
    *
-   * @param {object} weights {x,y} Initial weights
-   * @param {array} examples [{x,y}] Training set examples
+   * @param {object} weights {x1,x2} Initial weights
+   * @param {array} examples [{x1,x2}] Training set examples
    * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
    */
   const neuron = (weights, examples) => {
@@ -164,25 +166,25 @@ const nn = () => {
     /**
      * 1D matrix multiplication / vector dot product
      *
-     * @param {object} a {x,y} Vector with two elements
-     * @param {object} b {x,y} Vector with two elements
+     * @param {object} a {x1,x2} Vector with two elements
+     * @param {object} b {x1,x2} Vector with two elements
      * @returns {number} Dot product value
      */
-    const dot = (a, b) => a.x * b.x + a.y * b.y
+    const dot = (a, b) => a.x1 * b.x1 + a.x2 * b.x2
     /**
      * make a prediction given the weigts and a point
      *
-     * @param {array} weights {x,y} weights matrix (just a 2D vector)
-     * @param {array} point {x,y}
+     * @param {array} weights {x1,x2} weights matrix (just a 2D vector)
+     * @param {array} point {x1,x2}
      */
     const prediction = (weights, point) => activation(dot(weights, point))
     /**
      * Single training step
      *
-     * @param {object} weights {x,y} I think this is typically {w1, w2}
-     * @param {object} point {x,y} Training example typically x1, x2
+     * @param {object} weights {x1,x2} I think this is typically {w1, w2}
+     * @param {object} point {x1,x2} Training example typically x1, x2
      * @param {number} actual 0|1 Correct label for the example
-     * @returns {object} {x,y} updated weights
+     * @returns {object} {x1,x2} updated weights
      */
     const train = (weights, point, actual) => {
       // also know as... y_hat
@@ -200,7 +202,7 @@ const nn = () => {
       //       dw = 1/m X . dZ_T (_T = matrix transpose)
       //       In individual loop steps (m examples):
       //       dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m
-      //       (equivalent of {point.x, point.y} * error for all examples)
+      //       (equivalent of {point.x1, point.x2} * error for all examples)
       //       dw = dw / m (it seems we miss the division here)
       //       w = w - alpha * dw
       //
@@ -232,9 +234,9 @@ const nn = () => {
       //       N.B. We're currently *not* using the learning rate (alpha)
       //
       return {
-        x: weights.x + (point.x * error),
-        y: weights.y + (point.y * error)
-      }
+        x1: weights.x1 + (point.x1 * error),
+        x2: weights.x2 + (point.x2 * error)
+      };
     }
 
     const trainer = (acc, example) => train(acc, example.point, example.actual)
@@ -270,7 +272,7 @@ const nn = () => {
       chart.circle(point, 1, "white")
     ))
     // want the line to appear in front of the dots so draw it after
-    svg.appendChild(chart.line({x: 0, y: 0}, {x: X_MAX, y: Y_MAX}, "gray"))
+    svg.appendChild(chart.line({x1: 0, x2: 0}, {x1: X_MAX, x2: Y_MAX}, "gray"))
     return svg
   }
 
