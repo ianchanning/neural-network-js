@@ -16,6 +16,10 @@ All AI knowledge from online courses (In Andrew Ng we trust)
 >
 > — Richard Feynman [[8][8]] (1988)
 
+> implementing it myself from scratch was the most important
+>
+> — Andrej Karpathy talking to Andrew Ng [[2][2]] (2018)
+
 Aim: generate data, visualize it, label it and train a neuron to classify it
 
 # Inspired / blatantly copied from
@@ -747,10 +751,6 @@ This is one step of gradient descent
 
 
 # The end
-
-> implementing it myself from scratch was the most important
->
-> — [Andrej Karpathy talking to Andrew Ng][2] (2018)
 
 > Young man, in mathematics you don't understand things. You just get used to them.
 >

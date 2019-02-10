@@ -29,22 +29,22 @@ const nn = () => {
     // random set of data points
     const points = length => Array(length)
       .fill(0)
-      .map((i) => ({
-        x1: rand(0, X_MAX),
-        x2: rand(0, Y_MAX)
-      }))
+      .map((i) => ([
+        rand(0, X_MAX),
+        rand(0, Y_MAX)
+      ]))
     // initial random weights
-    const weights = {
-      x1: rand(-1, 1),
-      x2: rand(-1, 1)
-    }
+    const weights = [
+      rand(-1, 1),
+      rand(-1, 1)
+    ]
     /**
      * we happen to know that this will classify out points correctly
      * so we can use it to generate actual labels for training examples
      * here x/y are coordinates in a SVG/CSS style where top left is 0,0
      * the line is then effectively y = x
      */
-    const team = point => point.x1 > point.x2 ? 1 : 0
+    const team = point => point[0] > point[1] ? 1 : 0
     const labeller = examples => examples.map(
       point => ({point, actual: team(point)})
     )
@@ -82,13 +82,13 @@ const nn = () => {
       return svg
     }
     /**
-     * centre {x1,x2}
+     * centre [x1,x2]
      * @example <circle cx="100" cy="100" r="5" />
      */
     const circle = (centre, radius, colour) => {
       let c = element("circle")
-      c.setAttribute("cx", centre.x1)
-      c.setAttribute("cy", centre.x2)
+      c.setAttribute("cx", centre[0])
+      c.setAttribute("cy", centre[1])
       c.setAttribute("r", radius)
       c.style.fill = colour
       return c
@@ -102,15 +102,15 @@ const nn = () => {
       return elem
     }
     /**
-     * start, end {x1,x2}
+     * start, end [x1,x2]
      * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
      */
     const line = (start, end, colour) => {
       let l = element("line")
-      l.setAttribute("x1", start.x1)
-      l.setAttribute("y1", start.x2)
-      l.setAttribute("x2", end.x1)
-      l.setAttribute("y2", end.x2)
+      l.setAttribute("x1", start[0])
+      l.setAttribute("y1", start[1])
+      l.setAttribute("x2", end[0])
+      l.setAttribute("y2", end[1])
       l.setAttribute("stroke", colour)
       return l
     }
@@ -126,15 +126,13 @@ const nn = () => {
   /**
    * Perceptron / Neuron
    *
-   * @param {object} weights {x1,x2} Initial weights
-   * @param {array} examples [{x1,x2}] Training set examples
    * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
    */
-  const neuron = (weights, examples) => {
+  const neuron = () => {
     /**
      * Perceptron binary classifier / activation function
      *
-     * TODO: Is this our activation function too?
+     * Q: Is this our activation function too?
      * I think so, but this is purely for a perceptron
      * (incorrect) I think so - effectively for a ReLU we want to return output not one
      * But we want a binary classifier
@@ -166,27 +164,49 @@ const nn = () => {
     /**
      * 1D matrix multiplication / vector dot product
      *
-     * @param {object} a {x1,x2} Vector with two elements
-     * @param {object} b {x1,x2} Vector with two elements
+     * @param {object} a [x1,x2] Vector with two elements
+     * @param {object} b [x1,x2] Vector with two elements
      * @returns {number} Dot product value
      */
-    const dot = (a, b) => a.x1 * b.x1 + a.x2 * b.x2
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1]
+    
     /**
      * make a prediction given the weigts and a point
      *
-     * @param {array} weights {x1,x2} weights matrix (just a 2D vector)
-     * @param {array} point {x1,x2}
+     * @param {array} weights [x1,x2] weights matrix (just a 2D vector)
+     * @param {array} point [x1,x2]
+     * @returns {number} predicted output of the neuron
      */
     const prediction = (weights, point) => activation(dot(weights, point))
+
+    /**
+     * The loss / error function
+     * 
+     * @param {number} actual the value of the labelled data
+     * @param {number} prediction the predicted output of the neuron
+     * @returns {number} size of the prediction error
+     */
+     const loss = (actual, prediction) => actual - prediction
+
+    /**
+     * Feed the error back into the weights
+     * 
+     * @param {array} weights [x1,x2] weights matrix
+     * @param {array} point [x1,x2]
+     * @param {number} loss size of the prediction error
+     * @param {number} i index of the point
+     */
+    const adjust = (weights, point, loss, i) => weights[i] + (loss * point[i])
+    
     /**
      * Single training step
      *
-     * @param {object} weights {x1,x2} I think this is typically {w1, w2}
-     * @param {object} point {x1,x2} Training example typically x1, x2
+     * @param {object} weights [x1,x2] I think this is typically {w1, w2}
+     * @param {object} point [x1,x2] Training example typically x1, x2
      * @param {number} actual 0|1 Correct label for the example
-     * @returns {object} {x1,x2} updated weights
+     * @returns {object} [x1,x2] updated weights
      */
-    const train = (weights, point, actual) => {
+    const step = (weights, point, actual) => {
       // also know as... y_hat
       const predict = prediction(weights, point)
       // TODO: I'm not convinced this is correct
@@ -202,7 +222,7 @@ const nn = () => {
       //       dw = 1/m X . dZ_T (_T = matrix transpose)
       //       In individual loop steps (m examples):
       //       dw = x_1 * dz_1 + x_2 * dx_2 + ... x_m * dx_m
-      //       (equivalent of {point.x1, point.x2} * error for all examples)
+      //       (equivalent of {point[0], point[1]} * error for all examples)
       //       dw = dw / m (it seems we miss the division here)
       //       w = w - alpha * dw
       //
@@ -228,32 +248,45 @@ const nn = () => {
       // Comparing to my notes it seems like we calculate -error (or -dZ)
       // As A - Y is reversed
       // Then it makes sense to have a '+' when updating the weights
-      const error = actual - predict
+      const error = loss(actual, predict)
       // TODO: I think this is effectively the back propagation step
       //       w := w - alpha * dw (as per Andrew Ng python deep learning code)
       //       N.B. We're currently *not* using the learning rate (alpha)
       //
-      return {
-        x1: weights.x1 + (point.x1 * error),
-        x2: weights.x2 + (point.x2 * error)
-      };
+      return [
+        adjust(weights, point, error, 0),
+        adjust(weights, point, error, 1),
+      ];
     }
 
-    const trainer = (acc, example) => train(acc, example.point, example.actual)
-    // TODO: This does one iteration of gradient descent
-    //       It loops through all examples once
-    //       This is the equivalent of doing one matrix multiplication
-    //       You realise from this how that bias can become an issue
-    //       If you pass over the same set of examples a million times
-    //       Then you're going to be completely trained on all the details
-    //       of those examples
-    const trainedWeights = examples.reduce(trainer, weights)
-    // console.log(trainedWeights)
+    /**
+     * TODO: This does one iteration of gradient descent
+     *       It loops through all examples once
+     *       This is the equivalent of doing one matrix multiplication
+     *       You realise from this how that bias can become an issue
+     *       If you pass over the same set of examples a million times
+     *       Then you're going to be completely trained on all the details
+     *       of those examples
+     * 
+     * @param {array} weights [w1,w2] weights matrix
+     * @param {array} examples [[x1,x2],...]
+     */
+    const train = (weights, examples) => {
+      // wrapper function for the reduce
+      const trainStep = (weights, example) => step(
+        weights, 
+        example.point, 
+        example.actual
+      )
+      return examples.reduce(trainStep, weights)
+    }
+
+    // const trainer = (acc, example) => step(acc, example.point, example.actual)
+    // const trainedWeights = examples.reduce(trainer, weights)
 
     return {
       train,
-      prediction,
-      trainedWeights
+      prediction
     }
   }
 
@@ -261,36 +294,48 @@ const nn = () => {
     const colours = ["red", "blue"]
     const testPoints = generator.points(TEST_COUNT)
     const svg = chart.svg()
+    const weights = neuron.train(
+      generator.weights,
+      generator.examples(EXAMPLE_COUNT)
+    )
     testPoints.map(point => svg.appendChild(
       chart.clickelem(chart.circle(
         point,
         5,
-        colours[neuron.prediction(neuron.trainedWeights, point)]
+        colours[neuron.prediction(weights, point)]
       ))
     ))
     testPoints.map(point => svg.appendChild(
       chart.circle(point, 1, "white")
     ))
     // want the line to appear in front of the dots so draw it after
-    svg.appendChild(chart.line({x1: 0, x2: 0}, {x1: X_MAX, x2: Y_MAX}, "gray"))
-    return svg
+    svg.appendChild(chart.line([0, 0], [X_MAX, Y_MAX], "gray"))
+    return {svg, weights}
   }
 
   const draw = () => {
-    const chartGen = generator()
-    // note the connection with testPoints in the draw function
-    const examplePoints = chartGen.examples(EXAMPLE_COUNT)
-    const chartNeuron = neuron(chartGen.weights, examplePoints)
-    const svg = build(chartGen, chartNeuron, chart())
+    const drawP = (text) => {
+      var elem = document.createElement("p");
+      elem.innerText = text;
+      document.getElementById("root").append(elem);  
+    }
+
+    const chartGenerator = generator()
+    const chartNeuron = neuron()
+    const chartBuild = build(chartGenerator, chartNeuron, chart())
     
     // ignore document for testing
     if (document.getElementById("root")) {
-      document.getElementById("root").appendChild(svg)
+      drawP("(0,0)");
+      document.getElementById("root").appendChild(chartBuild.svg)
+      drawP("initial w: "+chartGenerator.weights.join());
+      drawP("trained w: "+chartBuild.weights.join());
     }
+
   
     return {
       chartNeuron,
-      chartGen
+      chartGenerator
     }
   }
 
