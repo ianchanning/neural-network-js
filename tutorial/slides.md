@@ -274,9 +274,9 @@ In `build()`, rather than black circles we can draw random red or blue circles.
 
 ```javascript
 var colours = ["red", "blue"];
-...
-var team = Math.round(Math.random());
-svg.appendChild(chart.circle(point, 4, colours[team]));
+generator.points(100).map(function(point) {
+  var team = Math.round(Math.random());
+  svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
 # Separate these circles with a line
@@ -329,7 +329,6 @@ and in `build()` set the team dynamically:
 
 ```javascript
 var team = generator.team(point);
-svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
 # Label my random examples
@@ -499,6 +498,7 @@ In `neuron()`:
 function prediction(w, x) {
   return activation(dot(w,x));
 }
+return {prediction};
 ```
 
 # Display my predictions
@@ -577,7 +577,7 @@ We can look at how the weights change step by step but I think it's overkill
 In `neuron()`, return the `step` function and then apply it in `build()`
 
 ```javascript
-example = generator.examples(1);
+var example = generator.examples(1);
 var weights = neuron.step(
   generator.weights, // w
   example[0].point, // x
@@ -680,10 +680,11 @@ Compare the Euclidean distance [[12][12]] between actual and predicted
 
 `y` and `a` are both numbers on the number line, so we compare a one-dimensional distance - the absolute difference
 
+           +--+
+    -2 -1  0  1  2  3  4
+
 ```javascript
 // sqrt((y - a) ** 2) = abs(y - a)
-//        +--+
-// -2 -1  0  1  2  3  4
 function loss(w, example) {
   var predict = prediction(w, example.point);
   return Math.abs(example.actual - predict);
@@ -808,7 +809,7 @@ Trained this perceptron to adjust two weights that then colour the test points d
 
 This is one step of gradient descent
 
-'Improved' this with a sigmoid activation function and it's differentiated back propagation.
+Improved this by applying multiple steps of gradient descent
 
 
 # The end
