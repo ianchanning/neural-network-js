@@ -14,7 +14,7 @@ function nn() {
     function points(length) {
       return Array(length)
         .fill(0)
-        .map(function(i) {
+        .map(function() {
           return [
             rand(0, 400),
             rand(0, 400)
@@ -110,29 +110,29 @@ function nn() {
       return activation(dot(w,x));
     }
 
-    function loss(y, prediction) {
+    function diff(y, prediction) {
       return y - prediction;
     }
 
-    function adjust(w, x, loss, i) {
-      return w[i] + loss * x[i];
+    function adjust(w, x, ydiff, i) {
+      return w[i] + ydiff * x[i];
     }
     
     // step 1: initialise weights w
     // step 2: for each example x with actual y
+    // return adjusted weights
     function step(w, x, y) {
       // step 2a: calculation actual output
       var yhat = prediction(w, x);
       // step 2b: update the weights for each x[i]
-      var l = loss(y, yhat);
+      var ydiff = diff(y, yhat);
       return [
-        adjust(w, x, l, 0),
-        adjust(w, x, l, 1)
+        adjust(w, x, ydiff, 0),
+        adjust(w, x, ydiff, 1)
       ];
     }
 
-    // intial weights w
-    // labelled examples
+    // return updated weights w
     function train(w, examples) {
       // wrapper function to work with reduce
       function trainExample(w, example) {
@@ -142,7 +142,36 @@ function nn() {
       return examples.reduce(trainExample, w);
     }
 
-    return {prediction, train}
+    // loss = euclidean distance
+    // sqrt((y - yhat) ** 2) = abs(y - yhat)
+    //       +--+
+    //-2 -1  0  1  2  3  4
+    function loss(w, example) {
+      return Math.abs(example.actual - prediction(w, example.point));
+    }
+
+    // the average of all loss functions
+    function cost(w, examples) {
+      function sum(total, example) {
+        // console.log({w, loss: loss(w, example)});
+        return total + loss(w, example);
+      }
+      return (1 / examples.length) * examples.reduce(sum, 0);
+    }
+
+    // threshold when cost is low enough
+    // how many iterations (epochs)
+    // return updated weights w
+    function gradientDescent(w, examples, threshold, epochs) {
+      var c = cost(w, examples);
+      // console.log({epochs, c});
+      if (epochs < 0 || c < threshold) {
+        return w;
+      }
+      return gradientDescent(train(w, examples), examples, threshold, epochs-1);
+    }
+
+    return {prediction, train, gradientDescent};
   }
 
   /**
@@ -151,9 +180,15 @@ function nn() {
   function build(generator, chart, neuron) {
     var svg = chart.svg();
     var colours = ["red", "blue"];
-    var weights = neuron.train(
+    // var weights = neuron.train(
+    //   generator.weights,
+    //   generator.examples(400),
+    // );
+    var weights = neuron.gradientDescent(
       generator.weights,
-      generator.examples(100)
+      generator.examples(400),
+      0.0001, // threshold
+      100 // epochs
     );
 
     generator.points(100).map(function(point) {

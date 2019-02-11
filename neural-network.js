@@ -182,11 +182,13 @@ const nn = () => {
     /**
      * The loss / error function
      * 
+     * The **cost** is the average of loss for all examples
+     * 
      * @param {number} actual the value of the labelled data
      * @param {number} prediction the predicted output of the neuron
      * @returns {number} size of the prediction error
      */
-     const loss = (actual, prediction) => actual - prediction
+    const loss = (actual, prediction) => actual - prediction
 
     /**
      * Feed the error back into the weights
