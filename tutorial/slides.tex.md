@@ -259,7 +259,9 @@ function build(generator, chart) {
 
 Add this to `draw()`:
 ```javascript
-var svg = build(generator(), chart(400, 400));
+var myGenerator = generator();
+var myChart = chart(400, 400);
+var svg = build(myGenerator, myChart);
 document.getElementById("root").appendChild(svg);
 ```
 
@@ -313,9 +315,7 @@ svg.appendChild(
 
 One side are the blues, and the other side are the reds. Go blues!
 
-Top half is for the blues, the reds get everything else.
-
-Now as the all-seeing-being we know how to label them. Reminder: SVG coordinates have (0,0) in the top left.
+Now as the mighty dictator we know how to label them. Reminder: SVG coordinates have (0,0) in the top left.
 
 In our `generator()`:
 
@@ -337,7 +337,7 @@ svg.appendChild(chart.circle(point, 4, colours[team]));
 Get our own slave labour / Amazon Mechanical Turk [[11][11]] to label data for us.
 
 ```javascript
-var labelledPoint = {
+var example = {
   point: [0, 1],
   actual: ???
 };
@@ -520,7 +520,7 @@ function build(generator, chart, neuron) {
 
 Create & pass neuron in `draw()`:
 ```javascript
-myNeuron = neuron();
+var myNeuron = neuron();
 var svg = build(myGenerator, myChart, myNeuron);
 ```
 
@@ -579,9 +579,9 @@ In `neuron()`, return the `step` function and then apply it in `build()`
 ```javascript
 example = generator.examples(1);
 var weights = neuron.step(
-  generator.weights,
-  example[0].point,
-  example[0].actual
+  generator.weights, // w
+  example[0].point, // x
+  example[0].actual // y
 );
 generator.points(100).map(function(point) {
   var team = neuron.prediction(weights, point);
@@ -630,23 +630,17 @@ function train(w, examples) {
   return examples.reduce(trainExample, w);
 }
 
-return {prediction, train}
+return {prediction, train};
 ```
 
 # Replace the guess with trained weights
 
-In `build()` add:
+In `build()` replace single step with:
 ```javascript
 var weights = neuron.train(
   generator.weights,
-  generator.examples(100) // how many?
+  generator.examples(400) // how many?
 );
-```
-
-Then replace:
-```javascript
-// var team = neuron.prediction(generator.weights, point);
-var team = neuron.prediction(weights, point);
 ```
 
 Have we gotten any better at guessing?
@@ -676,7 +670,7 @@ We've used all the examples that we have but only once. Kind of like revising wi
 
 So it's a good idea to re-use them but... **bias**. When you're a box with no senses and all you get given are the same set of examples over and over again you start noticing things that aren't relevant.
 
-# I want a metric for how well the weights worked
+# A metric for how well the weights worked
 
 First consider how well an individual example worked
 
@@ -731,11 +725,23 @@ function gradientDescent(w, examples, threshold, epochs) {
     epochs-1
   );
 }
+
+return {prediction, train, gradientDescent};
 ```
 
 N.B. recursion - alternative to a `while` loop
 
-# Give this process a name
+# Build it and give this process a name
+
+In `build()`, replace the `weights` with:
+```javascript
+var weights = neuron.gradientDescent(
+  generator.weights,
+  generator.examples(400),
+  0.0001, // threshold
+  100 // epochs
+);
+```
 
 Once we have a function we can differentiate, this is called Gradient Descent.
 
@@ -784,15 +790,11 @@ for (var i = 0; i < m; i++) {
   dw2 += x_i[1] * dz_i;
   db += dz_i;
 }
-J /= m; dw1 /= m; dw2 /= m; db /= m;
+J /= m; dw1 /= m; dw2 /= m; db /= m; // average
 w1 = w1 - alpha * dw1; // learning rate alpha
 w2 = w2 - alpha * dw2;
-b = b - alpha * db
+b = b - alpha * db;
 ```
-
-# In terms of what we've done
-
-TODO...
 
 # In summary
 
