@@ -413,7 +413,7 @@ Neurons act independently so can scale up process to a network
 
 `g` is our 'activation' function
 
-`~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
+`a` / `~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
 
 # Perceptron or neuron?
 
@@ -425,8 +425,8 @@ Mathematical concepts different, but coding concepts similar
 
 For us:
 
-1. Fully code perceptron
-2. Iterate to a neuron (if we get time)
+1. Focus on the perceptron
+2. Discuss all elements leading to gradient descent 
 
 # I want to combine my inputs into one value
 
@@ -558,25 +558,17 @@ drawP("intial w: "+myGenerator.weights.join());
 
 Which weights give the best predictions?
 
-# I want to specify how I can improve
-
-Define a loss/error function: a function we want to *minimise*
-
-How different our prediction was from the actual value
-
-```javascript
-function loss(y, prediction) {
-  return y - prediction;
-}
-```
-
 # I want to adjust the weights to improve my guess
 
-Feed the loss back into the weights
+Feed the difference back into the weights
 
 ```javascript
-function adjust(w, x, loss, i) {
-  return w[i] + loss * x[i];
+function diff(y, prediction) {
+  return y - prediction;
+}
+
+function adjust(w, x, ydiff, i) {
+  return w[i] + (ydiff * x[i]);
 }
 ```
 
@@ -591,12 +583,12 @@ One small step for one example
 // step 2: for each example x with actual y
 function step(w, x, y) {
   // step 2a: calculation actual output
-  var yhat = prediction(w, x);
+  var a = prediction(w, x);
   // step 2b: update the weights for each x[i]
-  var l = loss(y, yhat);
+  var ydiff = diff(y, a);
   return [
-    adjust(w, x, l, 0),
-    adjust(w, x, l, 1)
+    adjust(w, x, ydiff, 0),
+    adjust(w, x, ydiff, 1)
   ];
 }
 ```
@@ -682,6 +674,8 @@ var team = neuron.prediction(weights, point);
 
 Have we gotten any better at guessing?
 
+We can expand the count of examples and get a pretty perfect answer
+
 # I want to see what the trained weights are
 
 Draw another paragraph and put it in a function as we're repeating the steps
@@ -699,37 +693,129 @@ drawP("initial w: "+myGenerator.weights.join());
 drawP("trained w: "+myBuild.weights.join());
 ```
 
-# Sigmoid neuron
+# I want to re-use the examples
 
-Smooth curved perceptron
+We've used all the examples that we have but only once. Kind of like revising with looking at your notes just once.
 
-       a                 a
-       ^                 ^
-      1|     +---+      1|        ---+
-       |     |           |       /
-    1/2|     |        1/2|      /
-       |     |           |     /
-      0| +---+          0| +---
-       +----------> z    +----------> z
-             0                  0
-# Todo ...
-# I want to specify the cost function
+So it's a good idea to re-use them but... **bias**. When you're a box with no senses and all you get given are the same set of examples over and over again you start noticing things that aren't relevant.
 
-Let's meet the the [cross entropy][1] cost function.
+# I want a metric for how well the weights worked
 
-The bit we use is the derivative for back-propagation in eqn (61)
+First consider how well an individual example worked
 
-<img src="/tutorial/tex/fb5baf039ce32affc118d796608fdc48.svg?invert_in_darkmode&sanitize=true" align=middle width=237.05711864999995pt height=24.657735299999988pt/>
+# I want to a metric for how far a prediction is from the actual
 
-# To be continued...
+Compare the Euclidean distance [[12][12]] between actual and predicted
 
+`y` and `a` are both numbers on the number line, so we compare a one-dimensional distance - the absolute difference
 
-# I want to explain why we get bias/over-fitting
-Here we loop around our examples just once.
-But for more complex problems we loop over the same examples thousands of times.
-When you say the same word a thousand times over you start to notice tiny details about the word that aren't relevant.
-e.g. conscience, that's actually con-science but that's totally irrelevant.
-Neural Networks have no other ideas about the world except for the examples we give them.
+```javascript
+// sqrt((y - a) ** 2) = abs(y - a)
+//        +--+
+// -2 -1  0  1  2  3  4
+function loss(w, example) {
+  var predict = prediction(w, example.point);
+  return Math.abs(example.actual - predict);
+}
+```
+
+# I want to average the metric across all examples
+
+Sum using the `reduce` function and then divide by the length
+
+```javascript
+// the average of all loss functions
+function cost(w, examples) {
+  function sum(total, example) {
+    // console.log({w, loss: loss(w, example)});
+    return total + loss(w, example);
+  }
+  return (1 / examples.length) * examples.reduce(sum, 0);
+}
+```
+
+# I want to minimise this metric until it's good enough
+
+Our `train` did one iteration through the examples
+
+Now repeatedly iterate through until we reach a threshold
+
+```javascript
+// threshold when cost is low enough
+// how many iterations (epochs)
+function gradientDescent(w, examples, threshold, epochs) {
+  if (epochs < 0 || cost(w, examples) < threshold) {
+    return w;
+  }
+  return gradientDescent(
+    train(w, examples), 
+    examples, 
+    threshold, 
+    epochs-1
+  );
+}
+```
+
+N.B. recursion - alternative to a `while` loop
+
+# I want to give this process a name
+
+Once we have a function we can differentiate, this is called Gradient Descent.
+
+We can't differentiate the activation function, but once we use the sigmoid function the differentiated variables become almost exactly the same
+
+For perceptrons this is just called an iteration
+
+# Perceptron (not differentiable)
+
+![step (Neural Networks and Deep Learning [[13][13]])](step.png)
+
+# Sigmoid neuron (differentiable)
+
+![sigmoid (Neural Networks and Deep Learning [[13][13]])](sigmoid.png)
+
+# Show me the functions
+
+A new activation and new loss function
+
+More complex, but they're still functions
+
+```javascript
+function activation(z) {
+  return 1 / (1 + Math.exp(-z));
+}
+
+function loss(y, a) {
+  return -(y * Math.log(a) + (1-y) * Math.log(1-a));
+}
+```
+
+# Gradient descent for sigmoid
+
+As per Andrew Ng / deeplearning.ai week 2 [[4][4]]
+
+```javascript
+var J, dw1, dw2, db = 0;
+for (var i = 0; i < m; i++) {
+  var x_i = examples[i].point;
+  var y_i = examples[i].actual;
+  var z_i = dot(w, x_i) + b;
+  var a_i = activation(z_i);
+  J += loss(y_i, a_i);
+  var dz_i = a_i - y_i; // diff function
+  dw1 += x_i[0] * dz_i; // adjust function
+  dw2 += x_i[1] * dz_i;
+  db += dz_i;
+}
+J /= m; dw1 /= m; dw2 /= m; db /= m;
+w1 = w1 - alpha * dw1; // learning rate alpha
+w2 = w2 - alpha * dw2;
+b = b - alpha * db
+```
+
+# In terms of what we've done
+
+TODO...
 
 # In summary
 
@@ -775,3 +861,5 @@ This is one step of gradient descent
 [9]: http://shop.oreilly.com/product/9780596517748.do
 [10]: https://css-tricks.com/how-to-make-charts-with-svg/
 [11]: https://www.mturk.com/
+[12]: https://en.wikipedia.org/wiki/Euclidean_distance#One_dimension
+[13]: http://neuralnetworksanddeeplearning.com/chap1.html#sigmoid_neurons
