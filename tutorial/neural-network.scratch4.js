@@ -14,24 +14,7 @@ function nn() {
           return [rand(0, 400), rand(0, 400)];
         });
     }
-    // which side of the wall
-    function team(point) {
-      return (point[0] > point[1]) ? 1 : 0;
-    }
-    // points is a set of [x1,x2] points
-    function labeller(points) {
-      return points.map(function(point) {
-        return {
-          point: point,
-          actual: team(point)
-        };
-      });
-    }
-    // labelled training data
-    function examples(length) {
-      return labeller(points(length));
-    }
-    return {rand, points, team, examples};
+    return { rand, points };
   }
 
   /**
@@ -74,15 +57,13 @@ function nn() {
       l.setAttribute("stroke", colour);
       return l;
     }
-    return {svg, circle, line};
-
+    return { svg, circle, line };
   }
 
   /**
    * perceptron / neuron
    */
-  function neuron() {
-  }
+  function neuron() {}
 
   /**
    * generator + neuron + chart
@@ -90,14 +71,11 @@ function nn() {
   function build(generator, chart) {
     var svg = chart.svg();
     var colours = ["red", "blue"];
-
     generator.points(100).map(function(point) {
-      var team = generator.team(point);
+      var team = Math.round(Math.random());
       svg.appendChild(chart.circle(point, 4, colours[team]));
     });
-    svg.appendChild(
-      chart.line([0, 0], [400, 400], "black")
-    );
+    svg.appendChild(chart.line([0, 0], [400, 400], "black"));
     return svg;
   }
 
@@ -111,9 +89,10 @@ function nn() {
       document.getElementById("root").append(elem);
     }
     drawP("(0,0)");
-    var svg = build(generator(), chart(400, 400));
+    var myGenerator = generator();
+    var myChart = chart(400, 400);
+    var svg = build(myGenerator, myChart);
     document.getElementById("root").appendChild(svg);
-
   }
 
   draw();
