@@ -35,4 +35,6 @@ function nn() {
     }
     drawP("(0,0)");
   }
+
+  draw();
 }

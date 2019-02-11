@@ -84,7 +84,7 @@ function build() {}
 function draw() {}
 ```
 
-# I want it to display random values
+# Display random values
 
 Generate random test and training sets
 
@@ -95,15 +95,6 @@ function rand(min, max) {
 rand(1,3);
 rand(0,400); // x1, x2 range for our graph
 ```
-
-Stretch (`*`) and shift (`+`)
-
-    rand(0,1) -->  rand(1,3)
-
-    +-----+
-    +-----+-----+        (Stretch by (3 - 1))
-          +-----+-----+  (Shift by 1)
-    0     1     2     3
 
 # Slight digression (humour me)
 
@@ -126,20 +117,6 @@ $y = f(x) = 2x$
     1 |
     0 +------> x
       0 1 2
-
-# Mathsy definitions
-
-What's the mathsy name for:
-
-*I've got one 'set' and I want to go to another 'set' using `f`?*
-
-     xs "exes"          ys "whys"
-    +-------+          +-------+
-    | 0 1 2 | -- f --> | 0 2 4 |
-    +-------+          +-------+
-
-(This is actually University level maths - Set Theory)
-
 
 # Mathsy definitions
 
@@ -179,7 +156,7 @@ One random point in JavaScript:
 var point = [rand(0, 400), rand(0, 400)];
 ```
 
-# I want to generate a set of random test values
+# Generate a set of random test values
 
 Perhaps I should use a for loop? (never!)
 
@@ -189,10 +166,12 @@ Generate an empty array and use that to generate our new set.
 function points(length) {
   return Array(length)
     .fill(0)
-    .map(function(i) {
+    .map(function() {
       return [rand(0, 400), rand(0, 400)];
     });
 }
+
+return {points};
 ```
 
 Mapping `[0,0,0] ---> [[x1,x2],[x1,x2],[x1,x2]]` (demo?)
@@ -203,7 +182,7 @@ Make `rand` and `points` available, functions are passed as values
 return {rand, points};
 ```
 
-# I want to display these test values
+# Display these test values
 
 Gonna need a graph mate, how does that SVG work again?
 
@@ -243,7 +222,7 @@ function chart(height, width) {
 }
 ```
 
-# I want to draw the circle
+# Draw the circle
 
 ```javascript
 // centre is a point [x1,x2]
@@ -264,9 +243,9 @@ Make `svg` and `circle` available, functions are passed as values
 return {svg, circle};
 ```
 
-# I want to draw the test values as circles on a graph
+# Draw the test values as circles on a graph
 
-I smell a `map`. I want to map my test values onto the graph.
+I want to `map` my test values onto the graph
 
 ```javascript
 function build(generator, chart) {
@@ -287,7 +266,7 @@ document.getElementById("root").appendChild(svg);
 And... we've got a visualization of our data
 
 
-# I want to colour the circles red or blue
+# Colour the circles red or blue
 
 In `build()`, rather than black circles we can draw random red or blue circles.
 
@@ -298,7 +277,7 @@ var team = Math.round(Math.random());
 svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
-# I want to separate these circles with a line
+# Separate these circles with a line
 
 Time to racially discriminate our happy circles ...err "linearly separate" them. 
 
@@ -330,7 +309,7 @@ svg.appendChild(
 );
 ```
 
-# I want to make the colour depend on which side of the line
+# Make the colour depend on which side of the line
 
 One side are the blues, and the other side are the reds. Go blues!
 
@@ -353,7 +332,7 @@ var team = generator.team(point);
 svg.appendChild(chart.circle(point, 4, colours[team]));
 ```
 
-# I want to label my random examples
+# Label my random examples
 
 Get our own slave labour / Amazon Mechanical Turk [[11][11]] to label data for us.
 
@@ -364,7 +343,7 @@ var labelledPoint = {
 };
 ```
 
-# I want to say whether my examples are red or blue
+# Say whether my examples are red or blue
 
 In `generator()`:
 
@@ -387,7 +366,7 @@ function examples(length) {
 return {rand, points, team, examples};
 ```
 
-# I want to make a guess based on x1, x2 whether a circle is red or blue
+# Make a guess based on x1, x2 whether a circle is red or blue
 
 Time for the good stuff
 
@@ -428,7 +407,7 @@ For us:
 1. Focus on the perceptron
 2. Discuss all elements leading to gradient descent 
 
-# I want to combine my inputs into one value
+# Combine my inputs into one value
 
 Combine inputs into one value
 
@@ -438,7 +417,7 @@ Pathways in the brain become stronger the more they are used (see Inner Game of 
 
 Weighted sum / dot product (1 row x 1 column)
 
-# I want to multiply 1 row matrix x 1 column matrix
+# Multiply 1 row matrix x 1 column matrix
 
 Total the inputs using vector dot product / weighted sum
 
@@ -456,7 +435,7 @@ function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
 
 We can scale the dot product to as many elements as we want
 
-# I want to describe a perceptron firing
+# Describe a perceptron firing
 
 Perceptron 'fires' when inputs reach a threshold
 
@@ -483,9 +462,7 @@ Subtract threshold from both sides and call it 'bias'
      +----------> z
            0
 
-N.B. Our line goes through zero so we don't need bias
-
-if then, else...
+N.B. Our 'wall' goes through zero so we don't need bias
 
 Add this to `neuron()`:
 ```javascript
@@ -496,9 +473,9 @@ function activation(z) {return (z <= 0) ? 0 : 1;}
 
 Easiest function you can write &rarr; basis for all AI
 
-Someone somewhere is having a laugh
+Someone is having a laugh / it's genius $E = mc^2$
 
-# I want to start somewhere
+# Start somewhere
 
 Initialise our weights to either 0 or small random values.
 
@@ -511,20 +488,20 @@ var weights = [rand(-1,1), rand(-1,1)];
 return {rand, points, team, examples, weights};
 ```
 
-# I want to my a first guess
+# Make a first guess
 
 Make a prediction from our weights
 
 In `neuron()`:
 
 ```javascript
-// y = g(w . x + b)
+// a = g(w . x + b)
 function prediction(w, x) {
   return activation(dot(w,x));
 }
 ```
 
-# I want to display my predictions
+# Display my predictions
 
 Instead of our known `team` use our `prediction`.
 
@@ -547,7 +524,7 @@ myNeuron = neuron();
 var svg = build(myGenerator, myChart, myNeuron);
 ```
 
-# I want to get a better feel for what the weights mean
+# Get a better feel for what the weights mean
 
 Change the initial `weights` to some random values and show the weights we're using.
 
@@ -558,7 +535,7 @@ drawP("intial w: "+myGenerator.weights.join());
 
 Which weights give the best predictions?
 
-# I want to adjust the weights to improve my guess
+# Adjust the weights to improve my guess
 
 Feed the difference back into the weights
 
@@ -572,7 +549,7 @@ function adjust(w, x, ydiff, i) {
 }
 ```
 
-# I want to combine these into a training step 
+# Combine these into a training step 
 
 One small step for one example
 
@@ -593,7 +570,7 @@ function step(w, x, y) {
 }
 ```
 
-# I want to do a single step of training
+# Do a single step of training
 
 We can look at how the weights change step by step but I think it's overkill
 
@@ -635,7 +612,7 @@ var y  = xs.reduce(sum, 0); // 6
 
 (demo?)
 
-# I want to train using all examples
+# Train using all examples
 
 `reduce` the examples down into a single set of trained weights
 
@@ -656,7 +633,7 @@ function train(w, examples) {
 return {prediction, train}
 ```
 
-# I want to replace the guess with trained weights
+# Replace the guess with trained weights
 
 In `build()` add:
 ```javascript
@@ -676,7 +653,7 @@ Have we gotten any better at guessing?
 
 We can expand the count of examples and get a pretty perfect answer
 
-# I want to see what the trained weights are
+# See what the trained weights are
 
 Draw another paragraph and put it in a function as we're repeating the steps
 
@@ -693,7 +670,7 @@ drawP("initial w: "+myGenerator.weights.join());
 drawP("trained w: "+myBuild.weights.join());
 ```
 
-# I want to re-use the examples
+# Re-use the examples
 
 We've used all the examples that we have but only once. Kind of like revising with looking at your notes just once.
 
@@ -703,7 +680,7 @@ So it's a good idea to re-use them but... **bias**. When you're a box with no se
 
 First consider how well an individual example worked
 
-# I want to a metric for how far a prediction is from the actual
+# A metric for how far a prediction is from the actual
 
 Compare the Euclidean distance [[12][12]] between actual and predicted
 
@@ -719,7 +696,7 @@ function loss(w, example) {
 }
 ```
 
-# I want to average the metric across all examples
+# Average the metric across all examples
 
 Sum using the `reduce` function and then divide by the length
 
@@ -734,7 +711,7 @@ function cost(w, examples) {
 }
 ```
 
-# I want to minimise this metric until it's good enough
+# Minimise this metric until it's good enough
 
 Our `train` did one iteration through the examples
 
@@ -758,7 +735,7 @@ function gradientDescent(w, examples, threshold, epochs) {
 
 N.B. recursion - alternative to a `while` loop
 
-# I want to give this process a name
+# Give this process a name
 
 Once we have a function we can differentiate, this is called Gradient Descent.
 
