@@ -726,15 +726,15 @@ Now repeatedly iterate through until we reach a threshold
 ```javascript
 // threshold when cost is low enough
 // how many iterations (epochs)
-function gradientDescent(w, examples, threshold, epochs) {
+function gradDescent(w, examples, threshold, epochs) {
   var c = cost(w, examples);
   if (epochs < 0 || c < threshold) {
     return w;
   }
-  return gradientDescent(train(w, examples), examples, threshold, epochs - 1);
+  var t = train(w, examples);
+  return gradDescent(t, examples, threshold, epochs - 1);
 }
-
-return { prediction, train, gradientDescent };
+return { prediction, train, gradDescent };
 ```
 
 N.B. recursion - alternative to a `while` loop
@@ -744,7 +744,7 @@ N.B. recursion - alternative to a `while` loop
 In `build()`, replace the `weights` with:
 
 ```javascript
-var weights = neuron.gradientDescent(
+var weights = neuron.gradDescent(
   generator.weights,
   generator.examples(400),
   0.0001, // threshold
@@ -758,7 +758,7 @@ We can't differentiate the activation function, but once we use the sigmoid func
 
 For perceptrons this is just called an iteration
 
-Add some logging to the `gradientDescent` function to see progress
+Add some logging to the `gradDescent` function to see progress
 
 # In summary
 
