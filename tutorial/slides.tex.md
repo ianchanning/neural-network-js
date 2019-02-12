@@ -14,7 +14,7 @@ All AI knowledge from online courses (In Andrew Ng we trust)
 
 > Implementing it myself from scratch was the most important
 >
-> — Andrej Karpathy talking to Andrew Ng [[2][2]](2018)
+> — Andrej Karpathy talking to Andrew Ng (2018) [[2][2]]
 
 1. Generate data
 1. Visualize it
@@ -844,7 +844,7 @@ b = b - alpha * db;
 
 > What I cannot create, I do not understand.
 >
-> — Richard Feynman [[8][8]](1988)
+> — Richard Feynman(1988) [[8][8]]
 
 ...
 
@@ -856,7 +856,7 @@ b = b - alpha * db;
 
 > What you really want is to feel every element (and the connections between them) in your bones.
 >
-> — [Michael Nielsen][7] (2019)
+> — Michael Nielsen (2019) [[7][7]]
 
 [1]: http://neuralnetworksanddeeplearning.com/chap3.html#introducing_the_cross-entropy_cost_function
 [2]: https://www.youtube.com/watch?v=_au3yw46lcg
