@@ -1,4 +1,4 @@
-% A ~~Neural Network~~Neuron from scratch in JavaScript
+% A ~~Neural Network~~Perceptron from scratch in JavaScript
 % Ian Channing <https://github.com/ianchanning/neural-network-js>
 % February 12, 2019
 
@@ -10,13 +10,16 @@ JavaScript / React for Imec
 
 All AI knowledge from online courses (In Andrew Ng we trust)
 
-# The beginning
+# The plan
 
 > Implementing it myself from scratch was the most important
 >
-> — Andrej Karpathy talking to Andrew Ng [[2][2]] (2018)
+> — Andrej Karpathy talking to Andrew Ng [[2][2]](2018)
 
-Aim: generate data, visualize it, label it and train a neuron to classify it.
+1. Generate data
+1. Visualize it
+1. Label it
+1. Train a perceptron to classify it
 
 # Inspired / blatantly copied from
 
@@ -28,7 +31,7 @@ deeplearning.ai week 2 [[4][4]]
 
 ... but code isn't open, filling in blanks
 
-Neural Networks & Deep Learning course [[5][5]] 
+Neural Networks & Deep Learning course [[5][5]]
 
 ... but no code
 
@@ -47,12 +50,14 @@ Open Browser tools (F12)
 # Start the coding
 
 In `index.html`:
+
 ```html
 <script src="tutorial/neural-network.skeleton.js"></script>
-<script> 
+<script>
   nn();
 </script>
 ```
+
 In `tutorial/neural-network.skeleton.js`:
 
 Wrap code inside a function to avoid evil global scope [[9][9]]
@@ -92,8 +97,8 @@ Generate random test and training sets
 function rand(min, max) {
   return Math.random() * (max - min) + min;
 }
-rand(1,3);
-rand(0,400); // x1, x2 range for our graph
+rand(1, 3);
+rand(0, 400); // x1 & x2 range
 ```
 
 # Slight digression (humour me)
@@ -122,7 +127,7 @@ Reduce the gap between maths and code
 
 What's the mathsy name for:
 
-*I've got one 'set' and I want to go to another 'set' using `f`?*
+_I've got one 'set' and I want to go to another 'set' using `f`?_
 
      xs "exes"          ys "whys"
     +-------+          +-------+
@@ -137,10 +142,11 @@ Mapping! `f` 'maps' `0,1,2` on to `0,2,4`
 
 <img src="/tutorial/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
 
-
 ```javascript
-function f(x) {return 2 * x;}
-var xs = [0,1,2];
+function f(x) {
+  return 2 * x;
+}
+var xs = [0, 1, 2];
 var ys = xs.map(f); // [0,2,4]
 ```
 
@@ -170,17 +176,10 @@ function points(length) {
       return [rand(0, 400), rand(0, 400)];
     });
 }
-
-return {points};
+return { points };
 ```
 
 Mapping `[0,0,0] ---> [[x1,x2],[x1,x2],[x1,x2]]` (demo?)
-
-Make `rand` and `points` available, functions are passed as values
-
-```javascript
-return {rand, points};
-```
 
 # Display these test values
 
@@ -189,10 +188,10 @@ Gonna need a graph mate, how does that SVG work again?
 Should've read CSS-Trick's excellent guide on SVG Charts [[10][10]]
 
 ```xml
-<svg 
-  version="1.1" 
-  xmlns="http://www.w3.org/2000/svg" 
-  height="400" 
+<svg
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  height="400"
   width="400"
 >
   <circle cx="90" cy="192" r="4"></circle>
@@ -240,7 +239,7 @@ function circle(centre, radius, colour) {
 Make `svg` and `circle` available, functions are passed as values
 
 ```javascript
-return {svg, circle};
+return { svg, circle };
 ```
 
 # Draw the test values as circles on a graph
@@ -258,6 +257,7 @@ function build(generator, chart) {
 ```
 
 Add this to `draw()`:
+
 ```javascript
 var myGenerator = generator();
 var myChart = chart(400, 400);
@@ -266,7 +266,6 @@ document.getElementById("root").appendChild(svg);
 ```
 
 And... we've got a visualization of our data
-
 
 # Colour the circles red or blue
 
@@ -281,11 +280,12 @@ generator.points(100).map(function(point) {
 
 # Separate these circles with a line
 
-Time to racially discriminate our happy circles ...err "linearly separate" them. 
+Time to racially discriminate our happy circles ...err "linearly separate" them.
 
 We need a wall!
 
 Add this to `chart()`:
+
 ```javascript
 // start, end are points [x1,x2]
 // <line x1="0" y1="0" x2="10" y2="10" fill="blue"></line>
@@ -298,7 +298,7 @@ function line(start, end, colour) {
   l.setAttribute("stroke", colour);
   return l;
 }
-return {svg, circle, line};
+return { svg, circle, line };
 ```
 
 # Build the wall! Build the wall!
@@ -306,9 +306,7 @@ return {svg, circle, line};
 Add this to `build()`:
 
 ```javascript
-svg.appendChild(
-  chart.line([0, 0], [400, 400], "black")
-);
+svg.appendChild(chart.line([0, 0], [400, 400], "black"));
 ```
 
 # Make the colour depend on which side of the line
@@ -322,9 +320,11 @@ In our `generator()`:
 ```javascript
 // which side of the wall
 function team(point) {
-  return (point[0] > point[1]) ? 1 : 0;
+  return point[0] > point[1] ? 1 : 0;
 }
+return { points, team };
 ```
+
 and in `build()` set the team dynamically:
 
 ```javascript
@@ -361,8 +361,7 @@ function labeller(points) {
 function examples(length) {
   return labeller(points(length));
 }
-
-return {rand, points, team, examples};
+return { points, team, examples };
 ```
 
 # Make a guess based on x1, x2 whether a circle is red or blue
@@ -404,7 +403,7 @@ Mathematical concepts different, but coding concepts similar
 For us:
 
 1. Focus on the perceptron
-2. Discuss all elements leading to gradient descent 
+2. Discuss all elements leading to gradient descent
 
 # Combine my inputs into one value
 
@@ -429,7 +428,9 @@ Add this to `neuron()`:
 
 ```javascript
 // 2-D dot product only, [w1,w2], [x1,x2]
-function dot(w, x) {return w[0] * x[0] + w[1] * x[1];}
+function dot(w, x) {
+  return w[0] * x[0] + w[1] * x[1];
+}
 ```
 
 We can scale the dot product to as many elements as we want
@@ -450,24 +451,22 @@ Subtract threshold from both sides and call it 'bias'
     activation = |
                  | 1 if w . x + bias > 0
 
+# Activation graph
 
-# A bit confusing, let's see some code
+![step (Neural Networks and Deep Learning [[13][13]])](step.png)
 
-     a
-     ^
-    1|     +---+
-     |     |
-    0| +---+
-     +----------> z
-           0
+# Activation code
 
 N.B. Our 'wall' goes through zero so we don't need bias
 
 Add this to `neuron()`:
+
 ```javascript
-// z = dot(w, x) + bias (but no bias here)
+// z = dot(w, x) + bias
 // a = g(z)
-function activation(z) {return (z <= 0) ? 0 : 1;}
+function activation(z) {
+  return z <= 0 ? 0 : 1;
+}
 ```
 
 Easiest function you can write &rarr; basis for all AI
@@ -482,9 +481,9 @@ Add `weights` to `generator()` and return
 
 ```javascript
 // experiment with (0,0) or rand(0,400), or rand(0,1)
-var weights = [rand(-1,1), rand(-1,1)];
+var weights = [rand(-1, 1), rand(-1, 1)];
 
-return {rand, points, team, examples, weights};
+return { points, team, examples, weights };
 ```
 
 # Make a first guess
@@ -496,9 +495,9 @@ In `neuron()`:
 ```javascript
 // a = g(w . x + b)
 function prediction(w, x) {
-  return activation(dot(w,x));
+  return activation(dot(w, x));
 }
-return {prediction};
+return { prediction };
 ```
 
 # Display my predictions
@@ -506,12 +505,14 @@ return {prediction};
 Instead of our known `team` use our `prediction`.
 
 In `build()` replace:
+
 ```javascript
 // var team = generator.team(point);
 var team = neuron.prediction(generator.weights, point);
 ```
 
 Add `neuron` to `build()`:
+
 ```javascript
 function build(generator, chart, neuron) {
   // ...
@@ -519,6 +520,7 @@ function build(generator, chart, neuron) {
 ```
 
 Create & pass neuron in `draw()`:
+
 ```javascript
 var myNeuron = neuron();
 var svg = build(myGenerator, myChart, myNeuron);
@@ -529,8 +531,9 @@ var svg = build(myGenerator, myChart, myNeuron);
 Change the initial `weights` to some random values and show the weights we're using.
 
 In `draw()` add this at the end:
+
 ```javascript
-drawP("intial w: "+myGenerator.weights.join());
+drawP("intial w: " + myGenerator.weights.join());
 ```
 
 Which weights give the best predictions?
@@ -545,11 +548,11 @@ function diff(y, prediction) {
 }
 
 function adjust(w, x, ydiff, i) {
-  return w[i] + (ydiff * x[i]);
+  return w[i] + ydiff * x[i];
 }
 ```
 
-# Combine these into a training step 
+# Combine these into a training step
 
 One small step for one example
 
@@ -563,10 +566,7 @@ function step(w, x, y) {
   var a = prediction(w, x);
   // step 2b: update the weights for each x[i]
   var ydiff = diff(y, a);
-  return [
-    adjust(w, x, ydiff, 0),
-    adjust(w, x, ydiff, 1)
-  ];
+  return [adjust(w, x, ydiff, 0), adjust(w, x, ydiff, 1)];
 }
 ```
 
@@ -605,9 +605,11 @@ The `reduce` function
      3  6
 
 ```javascript
-function sum(t, x) { return t + f(x); }
-var xs = [1,1,1];
-var y  = xs.reduce(sum, 0); // 6
+function sum(t, x) {
+  return t + f(x);
+}
+var xs = [1, 1, 1];
+var y = xs.reduce(sum, 0); // 6
 ```
 
 (demo?)
@@ -630,12 +632,13 @@ function train(w, examples) {
   return examples.reduce(trainExample, w);
 }
 
-return {prediction, train};
+return { prediction, train };
 ```
 
 # Replace the guess with trained weights
 
 In `build()` replace single step with:
+
 ```javascript
 var weights = neuron.train(
   generator.weights,
@@ -652,23 +655,29 @@ We can expand the count of examples and get a pretty perfect answer
 Draw another paragraph and put it in a function as we're repeating the steps
 
 Return the trained weights from `build()`:
+
 ```javascript
-return {svg, weights};
+return { svg, weights };
 ```
 
 Then in `draw()` replace:
+
 ```javascript
 var myBuild = build(myGenerator, myChart, myNeuron);
 document.getElementById("root").appendChild(myBuild.svg);
-drawP("initial w: "+myGenerator.weights.join());
-drawP("trained w: "+myBuild.weights.join());
+drawP("initial w: " + myGenerator.weights.join());
+drawP("trained w: " + myBuild.weights.join());
 ```
 
 # Re-use the examples
 
-We've used all the examples that we have but only once. Kind of like revising with looking at your notes just once.
+Used all the examples, but only once. Like revising with looking at your notes just once.
 
-So it's a good idea to re-use them but... **bias**. When you're a box with no senses and all you get given are the same set of examples over and over again you start noticing things that aren't relevant.
+So it's a good idea to re-use them but... **bias**
+
+Box with no senses + same examples over and over again
+
+&rarr; start noticing things that aren't relevant
 
 # A metric for how well the weights worked
 
@@ -693,6 +702,8 @@ function loss(w, example) {
 
 # Average the metric across all examples
 
+<img src="/tutorial/tex/9abccdea692d790425ac4368c5107afd.svg?invert_in_darkmode&sanitize=true" align=middle width=126.21183959999998pt height=27.77565449999998pt/>
+
 Sum using the `reduce` function and then divide by the length
 
 ```javascript
@@ -716,18 +727,14 @@ Now repeatedly iterate through until we reach a threshold
 // threshold when cost is low enough
 // how many iterations (epochs)
 function gradientDescent(w, examples, threshold, epochs) {
-  if (epochs < 0 || cost(w, examples) < threshold) {
+  var c = cost(w, examples);
+  if (epochs < 0 || c < threshold) {
     return w;
   }
-  return gradientDescent(
-    train(w, examples), 
-    examples, 
-    threshold, 
-    epochs-1
-  );
+  return gradientDescent(train(w, examples), examples, threshold, epochs - 1);
 }
 
-return {prediction, train, gradientDescent};
+return { prediction, train, gradientDescent };
 ```
 
 N.B. recursion - alternative to a `while` loop
@@ -735,6 +742,7 @@ N.B. recursion - alternative to a `while` loop
 # Build it and give this process a name
 
 In `build()`, replace the `weights` with:
+
 ```javascript
 var weights = neuron.gradientDescent(
   generator.weights,
@@ -750,6 +758,22 @@ We can't differentiate the activation function, but once we use the sigmoid func
 
 For perceptrons this is just called an iteration
 
+Add some logging to the `gradientDescent` function to see progress
+
+# In summary
+
+Generated random set of training and test data that we displayed on a graph for testing
+
+Split the points on the graph using an abritrary line (why? back propagation needs linear separation)
+
+Used a perceptron with an activation function and 'back propagation' algorithm
+
+Trained this perceptron to adjust two weights
+
+Improved this by applying multiple steps of 'gradient descent'
+
+**THE END (almost)**
+
 # Perceptron (not differentiable)
 
 ![step (Neural Networks and Deep Learning [[13][13]])](step.png)
@@ -758,19 +782,25 @@ For perceptrons this is just called an iteration
 
 ![sigmoid (Neural Networks and Deep Learning [[13][13]])](sigmoid.png)
 
-# Show me the functions
+# Sigmoid in code
 
 A new activation and new loss function
 
 More complex, but they're still functions
 
+<img src="/tutorial/tex/3271a71d169579911ca79d87f0760513.svg?invert_in_darkmode&sanitize=true" align=middle width=134.5377pt height=26.17730939999998pt/>
+
 ```javascript
 function activation(z) {
   return 1 / (1 + Math.exp(-z));
 }
+```
 
+<img src="/tutorial/tex/84d99f5cd171b43de8fffc7805305f95.svg?invert_in_darkmode&sanitize=true" align=middle width=240.84077655000002pt height=24.65753399999998pt/>
+
+```javascript
 function loss(y, a) {
-  return -(y * Math.log(a) + (1-y) * Math.log(1-a));
+  return -(y * Math.log(a) + (1 - y) * Math.log(1 - a));
 }
 ```
 
@@ -778,8 +808,13 @@ function loss(y, a) {
 
 As per Andrew Ng / deeplearning.ai week 2 [[4][4]]
 
+Potential for a workshop - implement the following code
+
 ```javascript
-var J, dw1, dw2, db = 0;
+var J,
+  dw1,
+  dw2,
+  db = 0;
 for (var i = 0; i < m; i++) {
   var x_i = examples[i].point;
   var y_i = examples[i].actual;
@@ -791,32 +826,25 @@ for (var i = 0; i < m; i++) {
   dw2 += x_i[1] * dz_i;
   db += dz_i;
 }
-J /= m; dw1 /= m; dw2 /= m; db /= m; // average
+```
+
+# Gradient descent part 2
+
+```javascript
+J /= m;
+dw1 /= m;
+dw2 /= m;
+db /= m; // averages
 w1 = w1 - alpha * dw1; // learning rate alpha
 w2 = w2 - alpha * dw2;
 b = b - alpha * db;
 ```
 
-# In summary
-
-Generated random set of training and test data that we displayed on a graph for testing
-
-Split the points on the graph using an abritrary line (why? back propagation needs linear separation)
-
-Used a perceptron with an activation function and back propagation algorithm
-
-Trained this perceptron to adjust two weights that then colour the test points depending on which side of the line
-
-This is one step of gradient descent
-
-Improved this by applying multiple steps of gradient descent
-
-
 # The end
 
 > What I cannot create, I do not understand.
 >
-> — Richard Feynman [[8][8]] (1988)
+> — Richard Feynman [[8][8]](1988)
 
 ...
 
