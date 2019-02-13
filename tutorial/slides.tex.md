@@ -205,18 +205,18 @@ Should've read CSS-Trick's excellent guide on SVG Charts [[10][10]]
 ```javascript
 function chart(height, width) {
   // <name xmlns="..."></name>
-  function element(name) {
+  function element(name, attrs) {
     var ns = "http://www.w3.org/2000/svg";
-    return document.createElementNS(ns, name);
+    var elem = document.createElementNS(ns, name);
+    Object.keys(attrs).map(function(key) {
+      elem.setAttribute(key, attrs[key]);
+    });
+    return elem;
   }
+
   // <svg ...></svg>
   function svg() {
-    // JS note: svg() can access element()
-    // var s is private to svg()
-    var s = element("svg");
-    s.setAttribute("height", height);
-    s.setAttribute("width", width);
-    return s;
+    return element("svg", { height, width });
   }
 }
 ```
@@ -226,13 +226,9 @@ function chart(height, width) {
 ```javascript
 // centre is a point [x1,x2]
 // <circle cx="0" cy="0" r="4" fill="blue"></circle>
-function circle(centre, radius, colour) {
-  var c = element("circle");
-  c.setAttribute("cx", centre[0]);
-  c.setAttribute("cy", centre[1]);
-  c.setAttribute("r", radius);
-  c.setAttribute("fill", colour);
-  return c;
+function circle(centre, r, fill) {
+  var [cx, cy] = centre;
+  return element("circle", { cx, cy, r, fill });
 }
 ```
 
@@ -252,7 +248,7 @@ function build(generator, chart) {
   generator.points(100).map(function(point) {
     svg.appendChild(chart.circle(point, 4, "black"));
   });
-  return svg;
+  return { svg };
 }
 ```
 
@@ -261,8 +257,8 @@ Add this to `draw()`:
 ```javascript
 var myGenerator = generator();
 var myChart = chart(400, 400);
-var svg = build(myGenerator, myChart);
-document.getElementById("root").appendChild(svg);
+var myBuild = build(myGenerator, myChart);
+document.getElementById("root").appendChild(myBuild.svg);
 ```
 
 And... we've got a visualization of our data
@@ -288,15 +284,11 @@ Add this to `chart()`:
 
 ```javascript
 // start, end are points [x1,x2]
-// <line x1="0" y1="0" x2="10" y2="10" fill="blue"></line>
-function line(start, end, colour) {
-  var l = element("line");
-  l.setAttribute("x1", start[0]);
-  l.setAttribute("y1", start[1]);
-  l.setAttribute("x2", end[0]);
-  l.setAttribute("y2", end[1]);
-  l.setAttribute("stroke", colour);
-  return l;
+// <line x1="0" y1="0" x2="1" y2="1" stroke="red"></line>
+function line(start, end, stroke) {
+  var [x1, y1] = start;
+  var [x2, y2] = end;
+  return element("line", { x1, y1, x2, y2, stroke });
 }
 return { svg, circle, line };
 ```
@@ -523,7 +515,7 @@ Create & pass neuron in `draw()`:
 
 ```javascript
 var myNeuron = neuron();
-var svg = build(myGenerator, myChart, myNeuron);
+var myBuild = build(myGenerator, myChart, myNeuron);
 ```
 
 # Get a better feel for what the weights mean
@@ -543,12 +535,12 @@ Which weights give the best predictions?
 Feed the difference back into the weights
 
 ```javascript
-function diff(y, prediction) {
-  return y - prediction;
+function diff(y, a) {
+  return y - a;
 }
 
-function adjust(w, x, ydiff, i) {
-  return w[i] + ydiff * x[i];
+function adjust(w_i, x_i, ydiff) {
+  return w_i + ydiff * x_i;
 }
 ```
 
@@ -558,6 +550,8 @@ One small step for one example
 
 <https://en.wikipedia.org/wiki/Perceptron#Steps>
 
+Add this to `neuron()`:
+
 ```javascript
 // step 1: initialise weights w
 // step 2: for each example x with actual y
@@ -566,15 +560,16 @@ function step(w, x, y) {
   var a = prediction(w, x);
   // step 2b: update the weights for each x[i]
   var ydiff = diff(y, a);
-  return [adjust(w, x, ydiff, 0), adjust(w, x, ydiff, 1)];
+  return [adjust(w[0], x[0], ydiff), adjust(w[1], x[1], ydiff)];
 }
+return { step };
 ```
 
 # Do a single step of training
 
 We can look at how the weights change step by step but I think it's overkill
 
-In `neuron()`, return the `step` function and then apply it in `build()`
+Apply it in `build()`
 
 ```javascript
 var example = generator.examples(1);
@@ -631,7 +626,6 @@ function train(w, examples) {
   // repeatedly updates w and returns the trained w
   return examples.reduce(trainExample, w);
 }
-
 return { prediction, train };
 ```
 
@@ -660,12 +654,9 @@ Return the trained weights from `build()`:
 return { svg, weights };
 ```
 
-Then in `draw()` replace:
+Then in `draw()` add:
 
 ```javascript
-var myBuild = build(myGenerator, myChart, myNeuron);
-document.getElementById("root").appendChild(myBuild.svg);
-drawP("initial w: " + myGenerator.weights.join());
 drawP("trained w: " + myBuild.weights.join());
 ```
 
@@ -731,8 +722,8 @@ function gradDescent(w, examples, threshold, epochs) {
   if (epochs < 0 || c < threshold) {
     return w;
   }
-  var t = train(w, examples);
-  return gradDescent(t, examples, threshold, epochs - 1);
+  var wt = train(w, examples);
+  return gradDescent(wt, examples, threshold, epochs - 1);
 }
 return { prediction, train, gradDescent };
 ```

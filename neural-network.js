@@ -1,4 +1,3 @@
-/* eslint no-unused-vars: "off" */
 /**
  * This is an experiment to see if I can recreate funfunfunction's machine-learning / back-propagation code
  * @link https://www.youtube.com/watch?v=anN2Ey37s-o
@@ -9,13 +8,13 @@ const nn = () => {
   const X_MAX = 400;
   const Y_MAX = 400;
   // usually called the training set
-  const EXAMPLE_COUNT = 10000; // set this to a low number for tests
-  const TEST_COUNT = 200;
+  const EXAMPLE_COUNT = 400; // 80% of total
+  const TEST_COUNT = 100; // 20% of total
 
   /**
    * Generate the required data specific for this network
    *
-   * @returns {object} {weights,points} the initial weights and training/test data
+   * @returns {object} {weights, points, examples} initial weights, test data, training data
    */
   const generator = () => {
     /**
@@ -26,31 +25,47 @@ const nn = () => {
      * @returns {number} Random number
      */
     const rand = (min, max) => Math.random() * (max - min) + min;
-    // random set of data points
+
+    /**
+     * Set of random data points
+     * @param {number} length how many points
+     * @returns {array} [[x1,x2],...]
+     */
     const points = length =>
       Array(length)
         .fill(0)
-        .map(i => [rand(0, X_MAX), rand(0, Y_MAX)]);
-    // initial random weights
+        .map(() => [rand(0, X_MAX), rand(0, Y_MAX)]);
+
+    // Initial random weights [w1,w2]
     const weights = [rand(-1, 1), rand(-1, 1)];
+
     /**
-     * we happen to know that this will classify out points correctly
+     * We happen to know that this will classify out points correctly
      * so we can use it to generate actual labels for training examples
      * here x/y are coordinates in a SVG/CSS style where top left is 0,0
      * the line is then effectively y = x
+     * @param {array} point [x1, x2]
+     * @returns {number} 0|1 which team
      */
     const team = point => (point[0] > point[1] ? 1 : 0);
-    const labeller = examples =>
-      examples.map(point => ({ point, actual: team(point) }));
-    // generate labelled training data
+
+    /**
+     *
+     * @param {array} points [[x1,x2],...]
+     * @returns {array} [{point,actual},...]
+     */
+    const labeller = points =>
+      points.map(point => ({ point, actual: team(point) }));
+
+    /**
+     * Labelled training data
+     *
+     * @param {number} length how many examples
+     * @returns {array} [{point,actual},...]
+     */
     const examples = length => labeller(points(length));
 
-    return {
-      weights,
-      points,
-      examples,
-      rand
-    };
+    return { weights, points, examples };
   };
 
   /**
@@ -61,30 +76,33 @@ const nn = () => {
    *
    * @returns {Object} Primitives for creating the chart
    */
-  const chart = () => {
-    const element = name =>
-      document.createElementNS("http://www.w3.org/2000/svg", name);
+  const chart = (height, width) => {
+    /**
+     *
+     * @param {string} name element name
+     * @param {object} attrs attributes
+     * @returns {object} SVG element
+     */
+    const element = (name, attrs) => {
+      let elem = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.keys(attrs).map(function(key) {
+        elem.setAttribute(key, attrs[key]);
+      });
+      return elem;
+    };
     /**
      * @example <svg height="400" width="400">...</svg>
      */
-    const svg = () => {
-      let svg = element("svg");
-      svg.setAttribute("height", Y_MAX.toString());
-      svg.setAttribute("width", X_MAX.toString());
-      return svg;
-    };
+    const svg = () => element("svg", { height, width });
     /**
-     * centre [x1,x2]
+     * Circle
+     * @param {array} centre [x1,x2]
+     * @param {number} r radius
+     * @param {string} fill colour
      * @example <circle cx="100" cy="100" r="5" />
      */
-    const circle = (centre, radius, colour) => {
-      let c = element("circle");
-      c.setAttribute("cx", centre[0]);
-      c.setAttribute("cy", centre[1]);
-      c.setAttribute("r", radius);
-      c.style.fill = colour;
-      return c;
-    };
+    const circle = ([cx, cy], r, fill) =>
+      element("circle", { cx, cy, r, fill });
     /**
      * @example <circle ... onclick="..." />
      */
@@ -97,22 +115,10 @@ const nn = () => {
      * start, end [x1,x2]
      * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
      */
-    const line = (start, end, colour) => {
-      let l = element("line");
-      l.setAttribute("x1", start[0]);
-      l.setAttribute("y1", start[1]);
-      l.setAttribute("x2", end[0]);
-      l.setAttribute("y2", end[1]);
-      l.setAttribute("stroke", colour);
-      return l;
-    };
+    const line = ([x1, y1], [x2, y2], stroke) =>
+      element("line", { x1, y1, x2, y2, stroke });
 
-    return {
-      clickelem,
-      circle,
-      line,
-      svg
-    };
+    return { clickelem, circle, line, svg };
   };
 
   /**
@@ -149,60 +155,57 @@ const nn = () => {
      * output = |
      *          | 1 if input + bias > 0
      *
-     * @param {number} input Neuron value before activation function
+     * @param {number} z Neuron value before activation function
      * @returns {number} Class of the example 0|1
      */
-    const activation = input => (input <= 0 ? 0 : 1);
+    const activation = z => (z <= 0 ? 0 : 1);
     /**
      * 1D matrix multiplication / vector dot product
      *
-     * @param {object} a [x1,x2] Vector with two elements
-     * @param {object} b [x1,x2] Vector with two elements
+     * @param {array} a [x1,x2] Vector with two elements
+     * @param {array} b [x1,x2] Vector with two elements
      * @returns {number} Dot product value
      */
     const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
 
     /**
-     * make a prediction given the weigts and a point
+     * make a prediction given the weights and a point
      *
-     * @param {array} weights [x1,x2] weights matrix (just a 2D vector)
-     * @param {array} point [x1,x2]
+     * @param {array} w [x1,x2] weights matrix (just a 2D vector)
+     * @param {array} x [x1,x2]
      * @returns {number} predicted output of the neuron
      */
-    const prediction = (weights, point) => activation(dot(weights, point));
+    const prediction = (w, x) => activation(dot(w, x));
 
     /**
-     * The loss / error function
+     * The positive or negative adjustment required
      *
-     * The **cost** is the average of loss for all examples
-     *
-     * @param {number} actual the value of the labelled data
-     * @param {number} prediction the predicted output of the neuron
+     * @param {number} y the value of the labelled data
+     * @param {number} a the predicted output of the neuron
      * @returns {number} size of the prediction error
      */
-    const loss = (actual, prediction) => actual - prediction;
+    const diff = (y, a) => y - a;
 
     /**
      * Feed the error back into the weights
      *
-     * @param {array} weights [x1,x2] weights matrix
-     * @param {array} point [x1,x2]
-     * @param {number} loss size of the prediction error
-     * @param {number} i index of the point
+     * @param {number} w_i w[i] weights matrix
+     * @param {number} x_i x[i]
+     * @param {number} ydiff size of the prediction error
      */
-    const adjust = (weights, point, loss, i) => weights[i] + loss * point[i];
+    const adjust = (w_i, x_i, ydiff) => w_i + ydiff * x_i;
 
     /**
      * Single training step
      *
-     * @param {object} weights [x1,x2] I think this is typically {w1, w2}
-     * @param {object} point [x1,x2] Training example typically x1, x2
-     * @param {number} actual 0|1 Correct label for the example
+     * @param {object} w [w1,w2] I think this is typically {w1, w2}
+     * @param {object} x [x1,x2] Training example typically x1, x2
+     * @param {number} y 0|1 Correct label for the example
      * @returns {object} [x1,x2] updated weights
      */
-    const step = (weights, point, actual) => {
+    const step = (w, x, y) => {
       // also know as... y_hat
-      const predict = prediction(weights, point);
+      const a = prediction(w, x);
       // TODO: I'm not convinced this is correct
       //       Or at least I don't know why it's correct
       //       It could be by accident because of the line we've chosen
@@ -233,7 +236,7 @@ const nn = () => {
       //       dw1 = dL/dw1 = x1 * dz
       //       dw2 = dL/dw2 = x2 * dz
       //
-      //       Oh oh, it's possibly not,
+      //       Oh oh, it's not,
       //       it looks like the learning algorithm for a single perceptron
       //       @link https://en.wikipedia.org/wiki/Perceptron#Learning_algorithm
       //
@@ -242,15 +245,12 @@ const nn = () => {
       // Comparing to my notes it seems like we calculate -error (or -dZ)
       // As A - Y is reversed
       // Then it makes sense to have a '+' when updating the weights
-      const error = loss(actual, predict);
+      const ydiff = diff(y, a);
       // TODO: I think this is effectively the back propagation step
       //       w := w - alpha * dw (as per Andrew Ng python deep learning code)
       //       N.B. We're currently *not* using the learning rate (alpha)
       //
-      return [
-        adjust(weights, point, error, 0),
-        adjust(weights, point, error, 1)
-      ];
+      return [adjust(w[0], x[0], ydiff), adjust(w[1], x[1], ydiff)];
     };
 
     /**
@@ -262,69 +262,102 @@ const nn = () => {
      *       Then you're going to be completely trained on all the details
      *       of those examples
      *
-     * @param {array} weights [w1,w2] weights matrix
+     * @param {array} w [w1,w2] weights matrix
      * @param {array} examples [[x1,x2],...]
      */
-    const train = (weights, examples) => {
+    const train = (w, examples) => {
       // wrapper function for the reduce
-      const trainStep = (weights, example) =>
-        step(weights, example.point, example.actual);
-      return examples.reduce(trainStep, weights);
+      const trainStep = (w, example) => step(w, example.point, example.actual);
+      return examples.reduce(trainStep, w);
     };
 
-    // const trainer = (acc, example) => step(acc, example.point, example.actual)
-    // const trainedWeights = examples.reduce(trainer, weights)
+    /**
+     * Loss (error) function
+     *
+     * Euclidean distance between predict and actual
+     * sqrt((y - a) ** 2) = abs(y - a)
+     *
+     * @param {array} w weights [w1,w2]
+     * @param {object} example {point,actual}
+     * @returns {number} distance
+     */
+    const loss = (w, example) =>
+      Math.abs(example.actual - prediction(w, example.point));
 
-    return {
-      train,
-      prediction
+    /**
+     * Cost function
+     *
+     * The average of all loss functions
+     *
+     * @param {array} w weights [w1,w2]
+     * @param {array} examples [{point,actual},...]
+     * @returns {number} average loss
+     */
+    const cost = (w, examples) => {
+      const sum = (total, example) => {
+        // console.log({ w, loss: loss(w, example) });
+        return total + loss(w, example);
+      };
+      return (1 / examples.length) * examples.reduce(sum, 0);
     };
+
+    /**
+     * Gradient Descent (if activation were differentiable)
+     *
+     * @param {array} w [w1,w2] intial weights
+     * @param {array} examples [{point,actual},...]
+     * @param {number} threshold low enough cost
+     * @param {number} epochs max iterations
+     * @returns {array} [w1,w2] trained weights
+     */
+    const gradDescent = (w, examples, threshold, epochs) =>
+      epochs < 0 || cost(w, examples) < threshold
+        ? w
+        : gradDescent(train(w, examples), examples, threshold, epochs - 1);
+
+    return { prediction, train, gradDescent };
   };
 
-  const build = (generator, neuron, chart) => {
-    const colours = ["red", "blue"];
-    const testPoints = generator.points(TEST_COUNT);
+  const build = (generator, chart, neuron) => {
     const svg = chart.svg();
-    const weights = neuron.train(
-      generator.weights,
-      generator.examples(EXAMPLE_COUNT)
+    const colours = ["red", "blue"];
+    const initialWeights = generator.weights;
+    const weights = neuron.gradDescent(
+      initialWeights,
+      generator.examples(EXAMPLE_COUNT),
+      0.0001, // threshold
+      100 // epochs
     );
-    testPoints.map(point =>
-      svg.appendChild(
-        chart.clickelem(
-          chart.circle(point, 5, colours[neuron.prediction(weights, point)])
-        )
-      )
-    );
-    testPoints.map(point => svg.appendChild(chart.circle(point, 1, "white")));
+    generator.points(TEST_COUNT).map(point => {
+      const team = neuron.prediction(weights, point);
+      svg.appendChild(chart.clickelem(chart.circle(point, 5, colours[team])));
+      svg.appendChild(chart.circle(point, 1, "white"));
+    });
     // want the line to appear in front of the dots so draw it after
     svg.appendChild(chart.line([0, 0], [X_MAX, Y_MAX], "gray"));
-    return { svg, weights };
+    return { svg, initialWeights, weights };
   };
 
   const draw = () => {
     const drawP = text => {
-      var elem = document.createElement("p");
+      let elem = document.createElement("p");
       elem.innerText = text;
       document.getElementById("root").append(elem);
     };
 
     const chartGenerator = generator();
     const chartNeuron = neuron();
-    const chartBuild = build(chartGenerator, chartNeuron, chart());
+    const chartBuild = build(chartGenerator, chart(X_MAX, Y_MAX), chartNeuron);
 
     // ignore document for testing
     if (document.getElementById("root")) {
       drawP("(0,0)");
       document.getElementById("root").appendChild(chartBuild.svg);
-      drawP("initial w: " + chartGenerator.weights.join());
-      drawP("trained w: " + chartBuild.weights.join());
+      drawP("initial weights: " + chartBuild.initialWeights.join());
+      drawP("trained weights: " + chartBuild.weights.join());
     }
 
-    return {
-      chartNeuron,
-      chartGenerator
-    };
+    return { chartNeuron, chartGenerator };
   };
 
   return draw();
