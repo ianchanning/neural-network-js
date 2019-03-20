@@ -534,6 +534,8 @@ Which weights give the best predictions?
 
 Feed the difference back into the weights
 
+Add these to `neuron()`:
+
 ```javascript
 function diff(y, a) {
   return y - a;
@@ -562,7 +564,7 @@ function step(w, x, y) {
   var ydiff = diff(y, a);
   return [adjust(w[0], x[0], ydiff), adjust(w[1], x[1], ydiff)];
 }
-return { step };
+return { prediction, step };
 ```
 
 # Do a single step of training
@@ -580,6 +582,7 @@ var weights = neuron.step(
 );
 generator.points(100).map(function(point) {
   var team = neuron.prediction(weights, point);
+}
 ```
 
 # One last digression
@@ -626,7 +629,7 @@ function train(w, examples) {
   // repeatedly updates w and returns the trained w
   return examples.reduce(trainExample, w);
 }
-return { prediction, train };
+return { prediction, step, train };
 ```
 
 # Replace the guess with trained weights
@@ -683,6 +686,8 @@ Compare the Euclidean distance [[12][12]] between actual and predicted
            +--+
     -2 -1  0  1  2  3  4
 
+Add this in `neuron()`:
+
 ```javascript
 // sqrt((y - a) ** 2) = abs(y - a)
 function loss(w, example) {
@@ -696,6 +701,8 @@ function loss(w, example) {
 <img src="/tutorial/tex/9abccdea692d790425ac4368c5107afd.svg?invert_in_darkmode&sanitize=true" align=middle width=126.21183959999998pt height=27.77565449999998pt/>
 
 Sum using the `reduce` function and then divide by the length
+
+Add this in `neuron()`:
 
 ```javascript
 // the average of all loss functions
@@ -725,7 +732,7 @@ function gradDescent(w, examples, threshold, epochs) {
   var wt = train(w, examples);
   return gradDescent(wt, examples, threshold, epochs - 1);
 }
-return { prediction, train, gradDescent };
+return { prediction, step, train, gradDescent };
 ```
 
 N.B. recursion - alternative to a `while` loop
