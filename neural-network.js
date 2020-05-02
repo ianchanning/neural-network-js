@@ -1,5 +1,8 @@
 /**
  * This is an experiment to see if I can recreate funfunfunction's machine-learning / back-propagation code
+ *
+ * Note: This source uses more modern ES6 syntax
+ * The final version of the code following the tutorial is in tutorial/neural-network.final.js
  * @link https://www.youtube.com/watch?v=anN2Ey37s-o
  * @return object
  */

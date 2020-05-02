@@ -1,6 +1,6 @@
 # Tutorial
 
-Main slides: [A ~~Neural Network~~ Perceptron from scratch in JavaScript (pdf)][1].
+Main slides: [A ~~Neural Network~~ Perceptron from scratch in JavaScript][1] (pdf).
 
 You can also read the slides [markdown source][2]. It's easier to copy and paste the code from there but they miss the latex formatting.
 
