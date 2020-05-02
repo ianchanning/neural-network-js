@@ -10,7 +10,7 @@ function nn() {
     function points(length) {
       return Array(length)
         .fill(0)
-        .map(function() {
+        .map(function () {
           return [rand(0, 400), rand(0, 400)];
         });
     }
@@ -71,7 +71,7 @@ function nn() {
   function build(generator, chart) {
     var svg = chart.svg();
     var colours = ["red", "blue"];
-    generator.points(100).map(function(point) {
+    generator.points(100).map(function (point) {
       var team = Math.round(Math.random());
       svg.appendChild(chart.circle(point, 4, colours[team]));
     });

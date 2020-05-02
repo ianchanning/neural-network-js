@@ -10,7 +10,7 @@ function nn() {
     function points(length) {
       return Array(length)
         .fill(0)
-        .map(function() {
+        .map(function () {
           return [rand(0, 400), rand(0, 400)];
         });
     }
@@ -20,10 +20,10 @@ function nn() {
     }
     // points is a set of [x1,x2] points
     function labeller(points) {
-      return points.map(function(point) {
+      return points.map(function (point) {
         return {
           point: point,
-          actual: team(point)
+          actual: team(point),
         };
       });
     }
@@ -47,7 +47,7 @@ function nn() {
     function element(name, attrs) {
       var ns = "http://www.w3.org/2000/svg";
       var elem = document.createElementNS(ns, name);
-      Object.keys(attrs).map(function(key) {
+      Object.keys(attrs).map(function (key) {
         elem.setAttribute(key, attrs[key]);
       });
       return elem;
@@ -177,7 +177,7 @@ function nn() {
     //   100 // epochs
     // );
     // slide 50 end
-    generator.points(100).map(function(point) {
+    generator.points(100).map(function (point) {
       var team = Math.round(Math.random());
       // slide 22
       // var team = generator.team(point);
