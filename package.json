@@ -31,11 +31,11 @@
     "eslint": "^5.9.0",
     "eslint-plugin-jest": "^22.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "jest": "^23.6.0",
+    "jest": "^25.5.4",
     "prettier": "1.16.4"
   },
   "dependencies": {
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^25.5.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2"
   }
 }
