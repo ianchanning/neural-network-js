@@ -4,21 +4,14 @@
 
 ## Quickstart
 
-[Download the zip][1], extract and open `index.html`.
+1. Download [master.zip][1]
+1. Extract the zip
+1. Open the `neural-network-js-master` directory
+1. Open `index.html`
 
-The code works but the [tutorial/slides][2] are **primarily complete but pretty alpha**.
+That should open in a browser with a page that looks like the above screenshot.
 
-## TeX slides generation
-
-The slides are written in [pandoc markdown][4] and then generate `slides.pdf` via:
-
-```sh
-pandoc -t beamer slides.tex.md -o slides.pdf --pdf-engine=xelatex
-```
-
-The main source is `slides.tex.md` which contain LaTeX that is converted into jpg files using the [TeXify bot][3] and then injected into `slides.md`.
+Then follow the [tutorial][2].
 
 [1]: https://github.com/ianchanning/neural-network-js/archive/master.zip
-[2]: tutorial/slides.pdf
-[3]: https://github.com/apps/texify
-[4]: https://pandoc.org/MANUAL.html#pandocs-markdown
+[2]: tutorial/README.md
