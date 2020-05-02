@@ -4,7 +4,6 @@
   "description": "A Neural Network from scratch in JavaScript",
   "main": "neural-network.js",
   "scripts": {
-    "test": "jest",
     "lint": "node_modules/.bin/eslint"
   },
   "repository": {
@@ -21,21 +20,11 @@
   "bugs": {
     "url": "https://github.com/ianchanning/neural-network-js"
   },
-  "babel": {
-    "plugins": [
-      "transform-es2015-modules-commonjs"
-    ]
-  },
   "homepage": "https://github.com/ianchanning/neural-network-js",
   "devDependencies": {
-    "eslint": "^5.9.0",
-    "eslint-plugin-jest": "^22.1.2",
-    "eslint-plugin-react": "^7.11.1",
-    "jest": "^25.5.4",
-    "prettier": "1.16.4"
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "2.0.5"
   },
-  "dependencies": {
-    "babel-jest": "^25.5.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2"
-  }
+  "dependencies": {}
 }

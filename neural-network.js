@@ -31,7 +31,7 @@ const nn = () => {
      * @param {number} length how many points
      * @returns {array} [[x1,x2],...]
      */
-    const points = length =>
+    const points = (length) =>
       Array(length)
         .fill(0)
         .map(() => [rand(0, X_MAX), rand(0, Y_MAX)]);
@@ -47,15 +47,15 @@ const nn = () => {
      * @param {array} point [x1, x2]
      * @returns {number} 0|1 which team
      */
-    const team = point => (point[0] > point[1] ? 1 : 0);
+    const team = (point) => (point[0] > point[1] ? 1 : 0);
 
     /**
      *
      * @param {array} points [[x1,x2],...]
      * @returns {array} [{point,actual},...]
      */
-    const labeller = points =>
-      points.map(point => ({ point, actual: team(point) }));
+    const labeller = (points) =>
+      points.map((point) => ({ point, actual: team(point) }));
 
     /**
      * Labelled training data
@@ -63,7 +63,7 @@ const nn = () => {
      * @param {number} length how many examples
      * @returns {array} [{point,actual},...]
      */
-    const examples = length => labeller(points(length));
+    const examples = (length) => labeller(points(length));
 
     return { weights, points, examples };
   };
@@ -85,7 +85,7 @@ const nn = () => {
      */
     const element = (name, attrs) => {
       let elem = document.createElementNS("http://www.w3.org/2000/svg", name);
-      Object.keys(attrs).map(function(key) {
+      Object.keys(attrs).map((key) => {
         elem.setAttribute(key, attrs[key]);
       });
       return elem;
@@ -106,9 +106,9 @@ const nn = () => {
     /**
      * @example <circle ... onclick="..." />
      */
-    const clickelem = elem => {
+    const clickelem = (elem) => {
       /* eslint no-console: "off" */
-      elem.onclick = e => console.log(e.target.attributes);
+      elem.onclick = (e) => console.log(e.target.attributes);
       return elem;
     };
     /**
@@ -158,7 +158,7 @@ const nn = () => {
      * @param {number} z Neuron value before activation function
      * @returns {number} Class of the example 0|1
      */
-    const activation = z => (z <= 0 ? 0 : 1);
+    const activation = (z) => (z <= 0 ? 0 : 1);
     /**
      * 1D matrix multiplication / vector dot product
      *
@@ -328,7 +328,7 @@ const nn = () => {
       0.0001, // threshold
       100 // epochs
     );
-    generator.points(TEST_COUNT).map(point => {
+    generator.points(TEST_COUNT).map((point) => {
       const team = neuron.prediction(weights, point);
       svg.appendChild(chart.clickelem(chart.circle(point, 5, colours[team])));
       svg.appendChild(chart.circle(point, 1, "white"));
@@ -339,17 +339,15 @@ const nn = () => {
   };
 
   const draw = () => {
-    const drawP = text => {
+    const drawP = (text) => {
       let elem = document.createElement("p");
       elem.innerText = text;
       document.getElementById("root").append(elem);
     };
-
     const chartGenerator = generator();
     const chartNeuron = neuron();
     const chartBuild = build(chartGenerator, chart(X_MAX, Y_MAX), chartNeuron);
 
-    // ignore document for testing
     if (document.getElementById("root")) {
       drawP("(0,0)");
       document.getElementById("root").appendChild(chartBuild.svg);
@@ -362,4 +360,4 @@ const nn = () => {
 
   return draw();
 };
-export { nn };
+nn();

@@ -34,3 +34,4 @@ function nn() {
 
   draw();
 }
+nn();

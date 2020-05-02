@@ -217,3 +217,4 @@ function nn() {
 
   draw();
 }
+nn();
