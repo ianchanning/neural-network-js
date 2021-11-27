@@ -441,7 +441,7 @@ var nn = function nn() {
     var chartBuild = build(chartGenerator, chart(X_MAX, Y_MAX), chartNeuron);
 
     if (document.getElementById("root")) {
-      drawP("(0,0)");
+      drawP("(0,0) Note: SVG origin is top left");
       document.getElementById("root").appendChild(chartBuild.svg);
       drawP("initial weights: " + chartBuild.initialWeights.join());
       drawP("trained weights: " + chartBuild.weights.join());

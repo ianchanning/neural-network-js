@@ -29,7 +29,7 @@ function nn() {
       elem.innerText = text;
       document.getElementById("root").append(elem);
     }
-    drawP("(0,0)");
+    drawP("(0,0) Note: SVG origin is top left");
   }
 
   draw();

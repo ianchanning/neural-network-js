@@ -3,3 +3,4 @@ node_modules
 Session.vim
 package-lock.json
 yarn.lock
+tutorial.js

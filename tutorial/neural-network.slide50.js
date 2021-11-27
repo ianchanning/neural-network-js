@@ -203,7 +203,7 @@ function nn() {
       elem.innerText = text;
       document.getElementById("root").append(elem);
     }
-    drawP("(0,0)");
+    drawP("(0,0) Note: SVG origin is top left");
     var myGenerator = generator();
     var myChart = chart(400, 400);
     var myNeuron = neuron();
