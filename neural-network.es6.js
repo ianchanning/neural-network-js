@@ -1,31 +1,25 @@
 /**
- * Converted from neural-network.js ES6 to ES5
- * @link https://babeljs.io/repl/
- */
-"use strict";
-
-/**
  * This is an experiment to see if I can recreate funfunfunction's machine-learning / back-propagation code
+ *
+ * Note: This source uses more modern ES6 syntax
+ * The final version of the code following the tutorial is in tutorial/neural-network.final.js
  * @link https://www.youtube.com/watch?v=anN2Ey37s-o
  * @return object
  */
-var nn = function nn() {
+const nn = () => {
   "use strict";
-
-  var X_MAX = 400;
-  var Y_MAX = 400; // usually called the training set
-
-  var EXAMPLE_COUNT = 400; // 80% of total
-
-  var TEST_COUNT = 100; // 20% of total
+  const X_MAX = 400;
+  const Y_MAX = 400;
+  // usually called the training set
+  const EXAMPLE_COUNT = 400; // 80% of total
+  const TEST_COUNT = 100; // 20% of total
 
   /**
    * Generate the required data specific for this network
    *
    * @returns {object} {weights, points, examples} initial weights, test data, training data
    */
-
-  var generator = function generator() {
+  const generator = () => {
     /**
      * Generate random number between min and max
      *
@@ -33,24 +27,21 @@ var nn = function nn() {
      * @param   {number} max
      * @returns {number} Random number
      */
-    var rand = function rand(min, max) {
-      return Math.random() * (max - min) + min;
-    };
+    const rand = (min, max) => Math.random() * (max - min) + min;
+
     /**
      * Set of random data points
      * @param {number} length how many points
      * @returns {array} [[x1,x2],...]
      */
-
-    var points = function points(length) {
-      return Array(length)
+    const points = (length) =>
+      Array(length)
         .fill(0)
-        .map(function () {
-          return [rand(0, X_MAX), rand(0, Y_MAX)];
-        });
-    }; // Initial random weights [w1,w2]
+        .map(() => [rand(0, X_MAX), rand(0, Y_MAX)]);
 
-    var weights = [rand(-1, 1), rand(-1, 1)];
+    // Initial random weights [w1,w2]
+    const weights = [rand(-1, 1), rand(-1, 1)];
+
     /**
      * We happen to know that this will classify out points correctly
      * so we can use it to generate actual labels for training examples
@@ -59,41 +50,27 @@ var nn = function nn() {
      * @param {array} point [x1, x2]
      * @returns {number} 0|1 which team
      */
+    const team = (point) => (point[0] > point[1] ? 1 : 0);
 
-    var team = function team(point) {
-      return point[0] > point[1] ? 1 : 0;
-    };
     /**
      *
      * @param {array} points [[x1,x2],...]
      * @returns {array} [{point,actual},...]
      */
+    const labeller = (points) =>
+      points.map((point) => ({ point, actual: team(point) }));
 
-    var labeller = function labeller(points) {
-      return points.map(function (point) {
-        return {
-          point: point,
-          actual: team(point),
-        };
-      });
-    };
     /**
      * Labelled training data
      *
      * @param {number} length how many examples
      * @returns {array} [{point,actual},...]
      */
+    const examples = (length) => labeller(points(length));
 
-    var examples = function examples(length) {
-      return labeller(points(length));
-    };
-
-    return {
-      weights: weights,
-      points: points,
-      examples: examples,
-    };
+    return { weights, points, examples };
   };
+
   /**
    * SVG chart with circles
    *
@@ -102,17 +79,16 @@ var nn = function nn() {
    *
    * @returns {Object} Primitives for creating the chart
    */
-
-  var chart = function chart(height, width) {
+  const chart = (height, width) => {
     /**
      *
      * @param {string} name element name
      * @param {object} attrs attributes
      * @returns {object} SVG element
      */
-    var element = function element(name, attrs) {
-      var elem = document.createElementNS("http://www.w3.org/2000/svg", name);
-      Object.keys(attrs).map(function (key) {
+    const element = (name, attrs) => {
+      let elem = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.keys(attrs).map((key) => {
         elem.setAttribute(key, attrs[key]);
       });
       return elem;
@@ -120,13 +96,7 @@ var nn = function nn() {
     /**
      * @example <svg height="400" width="400">...</svg>
      */
-
-    var svg = function svg() {
-      return element("svg", {
-        height: height,
-        width: width,
-      });
-    };
+    const svg = () => element("svg", { height, width });
     /**
      * Circle
      * @param {array} centre [x1,x2]
@@ -134,65 +104,32 @@ var nn = function nn() {
      * @param {string} fill colour
      * @example <circle cx="100" cy="100" r="5" />
      */
-
-    var circle = function circle(centre, r, fill) {
-      var cx = centre[0];
-      var cy = centre[1];
-
-      return element("circle", {
-        cx: cx,
-        cy: cy,
-        r: r,
-        fill: fill,
-      });
-    };
+    const circle = ([cx, cy], r, fill) =>
+      element("circle", { cx, cy, r, fill });
     /**
      * @example <circle ... onclick="..." />
      */
-
-    var clickelem = function clickelem(elem) {
+    const clickelem = (elem) => {
       /* eslint no-console: "off" */
-      elem.onclick = function (e) {
-        return console.log(e.target.attributes);
-      };
-
+      elem.onclick = (e) => console.log(e.target.attributes);
       return elem;
     };
     /**
      * start, end [x1,x2]
      * @example <line x1="0" y1="0" x2="100" y2="100" stroke="black" />
      */
+    const line = ([x1, y1], [x2, y2], stroke) =>
+      element("line", { x1, y1, x2, y2, stroke });
 
-    var line = function line(start, end, stroke) {
-      var x1 = start[0];
-      var y1 = start[1];
-
-      var x2 = end[0];
-      var y2 = end[1];
-
-      return element("line", {
-        x1: x1,
-        y1: y1,
-        x2: x2,
-        y2: y2,
-        stroke: stroke,
-      });
-    };
-
-    return {
-      clickelem: clickelem,
-      circle: circle,
-      line: line,
-      svg: svg,
-    };
+    return { clickelem, circle, line, svg };
   };
+
   /**
    * Perceptron / Neuron
    *
    * @returns {object} {trainedWeights,prediction} Required data to classify the chart points
    */
-
-  var neuron = function neuron() {
+  const neuron = () => {
     /**
      * Perceptron binary classifier / activation function
      *
@@ -224,9 +161,7 @@ var nn = function nn() {
      * @param {number} z Neuron value before activation function
      * @returns {number} Class of the example 0|1
      */
-    var activation = function activation(z) {
-      return z <= 0 ? 0 : 1;
-    };
+    const activation = (z) => (z <= 0 ? 0 : 1);
     /**
      * 1D matrix multiplication / vector dot product
      *
@@ -234,10 +169,8 @@ var nn = function nn() {
      * @param {array} b [x1,x2] Vector with two elements
      * @returns {number} Dot product value
      */
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
 
-    var dot = function dot(a, b) {
-      return a[0] * b[0] + a[1] * b[1];
-    };
     /**
      * make a prediction given the weights and a point
      *
@@ -245,10 +178,8 @@ var nn = function nn() {
      * @param {array} x [x1,x2]
      * @returns {number} predicted output of the neuron
      */
+    const prediction = (w, x) => activation(dot(w, x));
 
-    var prediction = function prediction(w, x) {
-      return activation(dot(w, x));
-    };
     /**
      * The positive or negative adjustment required
      *
@@ -256,10 +187,8 @@ var nn = function nn() {
      * @param {number} a the predicted output of the neuron
      * @returns {number} size of the prediction error
      */
+    const diff = (y, a) => y - a;
 
-    var diff = function diff(y, a) {
-      return y - a;
-    };
     /**
      * Feed the error back into the weights
      *
@@ -267,10 +196,8 @@ var nn = function nn() {
      * @param {number} x_i x[i]
      * @param {number} ydiff size of the prediction error
      */
+    const adjust = (w_i, x_i, ydiff) => w_i + ydiff * x_i;
 
-    var adjust = function adjust(w_i, x_i, ydiff) {
-      return w_i + ydiff * x_i;
-    };
     /**
      * Single training step
      *
@@ -279,10 +206,10 @@ var nn = function nn() {
      * @param {number} y 0|1 Correct label for the example
      * @returns {object} [x1,x2] updated weights
      */
-
-    var step = function step(w, x, y) {
+    const step = (w, x, y) => {
       // also know as... y_hat
-      var a = prediction(w, x); // TODO: I'm not convinced this is correct
+      const a = prediction(w, x);
+      // TODO: I'm not convinced this is correct
       //       Or at least I don't know why it's correct
       //       It could be by accident because of the line we've chosen
       //       possibilities are
@@ -321,14 +248,14 @@ var nn = function nn() {
       // Comparing to my notes it seems like we calculate -error (or -dZ)
       // As A - Y is reversed
       // Then it makes sense to have a '+' when updating the weights
-
-      var ydiff = diff(y, a); // TODO: I think this is effectively the back propagation step
+      const ydiff = diff(y, a);
+      // TODO: I think this is effectively the back propagation step
       //       w := w - alpha * dw (as per Andrew Ng python deep learning code)
       //       N.B. We're currently *not* using the learning rate (alpha)
       //
-
       return [adjust(w[0], x[0], ydiff), adjust(w[1], x[1], ydiff)];
     };
+
     /**
      * TODO: This does one iteration of gradient descent
      *       It loops through all examples once
@@ -341,15 +268,12 @@ var nn = function nn() {
      * @param {array} w [w1,w2] weights matrix
      * @param {array} examples [[x1,x2],...]
      */
-
-    var train = function train(w, examples) {
+    const train = (w, examples) => {
       // wrapper function for the reduce
-      var trainStep = function trainStep(w, example) {
-        return step(w, example.point, example.actual);
-      };
-
+      const trainStep = (w, example) => step(w, example.point, example.actual);
       return examples.reduce(trainStep, w);
     };
+
     /**
      * Loss (error) function
      *
@@ -360,10 +284,9 @@ var nn = function nn() {
      * @param {object} example {point,actual}
      * @returns {number} distance
      */
+    const loss = (w, example) =>
+      Math.abs(example.actual - prediction(w, example.point));
 
-    var loss = function loss(w, example) {
-      return Math.abs(example.actual - prediction(w, example.point));
-    };
     /**
      * Cost function
      *
@@ -373,15 +296,14 @@ var nn = function nn() {
      * @param {array} examples [{point,actual},...]
      * @returns {number} average loss
      */
-
-    var cost = function cost(w, examples) {
-      var sum = function sum(total, example) {
+    const cost = (w, examples) => {
+      const sum = (total, example) => {
         // console.log({ w, loss: loss(w, example) });
         return total + loss(w, example);
       };
-
       return (1 / examples.length) * examples.reduce(sum, 0);
     };
+
     /**
      * Gradient Descent (if activation were differentiable)
      *
@@ -391,54 +313,43 @@ var nn = function nn() {
      * @param {number} epochs max iterations
      * @returns {array} [w1,w2] trained weights
      */
-
-    var gradDescent = function gradDescent(w, examples, threshold, epochs) {
-      return epochs < 0 || cost(w, examples) < threshold
+    const gradDescent = (w, examples, threshold, epochs) =>
+      epochs < 0 || cost(w, examples) < threshold
         ? w
         : gradDescent(train(w, examples), examples, threshold, epochs - 1);
-    };
 
-    return {
-      prediction: prediction,
-      train: train,
-      gradDescent: gradDescent,
-    };
+    return { prediction, train, gradDescent };
   };
 
-  var build = function build(generator, chart, neuron) {
-    var svg = chart.svg();
-    var colours = ["red", "blue"];
-    var initialWeights = generator.weights;
-    var weights = neuron.gradDescent(
+  const build = (generator, chart, neuron) => {
+    const svg = chart.svg();
+    const colours = ["red", "blue"];
+    const initialWeights = generator.weights;
+    const weights = neuron.gradDescent(
       initialWeights,
       generator.examples(EXAMPLE_COUNT),
       0.0001, // threshold
       100 // epochs
     );
-    generator.points(TEST_COUNT).map(function (point) {
-      var team = neuron.prediction(weights, point);
+    generator.points(TEST_COUNT).map((point) => {
+      const team = neuron.prediction(weights, point);
       svg.appendChild(chart.clickelem(chart.circle(point, 5, colours[team])));
       svg.appendChild(chart.circle(point, 1, "white"));
-    }); // want the line to appear in front of the dots so draw it after
-
+    });
+    // want the line to appear in front of the dots so draw it after
     svg.appendChild(chart.line([0, 0], [X_MAX, Y_MAX], "gray"));
-    return {
-      svg: svg,
-      initialWeights: initialWeights,
-      weights: weights,
-    };
+    return { svg, initialWeights, weights };
   };
 
-  var draw = function draw() {
-    var drawP = function drawP(text) {
-      var elem = document.createElement("p");
+  const draw = () => {
+    const drawP = (text) => {
+      let elem = document.createElement("p");
       elem.innerText = text;
       document.getElementById("root").append(elem);
     };
-
-    var chartGenerator = generator();
-    var chartNeuron = neuron();
-    var chartBuild = build(chartGenerator, chart(X_MAX, Y_MAX), chartNeuron);
+    const chartGenerator = generator();
+    const chartNeuron = neuron();
+    const chartBuild = build(chartGenerator, chart(X_MAX, Y_MAX), chartNeuron);
 
     if (document.getElementById("root")) {
       drawP("(0,0)");
@@ -447,13 +358,9 @@ var nn = function nn() {
       drawP("trained weights: " + chartBuild.weights.join());
     }
 
-    return {
-      chartNeuron: chartNeuron,
-      chartGenerator: chartGenerator,
-    };
+    return { chartNeuron, chartGenerator };
   };
 
   return draw();
 };
-
 nn();
