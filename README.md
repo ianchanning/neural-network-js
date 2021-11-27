@@ -120,7 +120,7 @@ Edit `index.html` and change the script `src`:
 
 ```diff
 -<script src="neural-network.js"></script>
-+<script src="tutorial.js"></script>
+<script src="tutorial.js"></script>
 ```
 
 Create a new file `tutorial.js` then add a `nn` function:
