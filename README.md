@@ -99,10 +99,9 @@ In maths this is called Mapping
 
 `f` _maps_ the 'set' `0,1,2` _on to_ `0,2,4`
 
-# <img src="/tutorial/tex/7997339883ac20f551e7f35efff0a2b9.svg?invert_in_darkmode&sanitize=true" align=middle width=31.99783454999999pt height=24.65753399999998pt/> in JavaScript
+# <img src="/tutorial/tex/7997339883ac20f551e7f35efff0a2b9.svg?invert_in_darkmode&sanitize=true" align=middle width=61.99783454999999pt height=54.65753399999998pt/> in JavaScript
 
-# <img src="/tutorial/tex/7997339883ac20f551e7f35efff0a2b9.svg?invert_in_darkmode&sanitize=true" align=middle width=31.99783454999999pt height=24.65753399999998pt/> in JavaScript
-
+<img src="/tutorial/tex/7ff425bd7d5c3e42836a2879e47ac5bd.svg?invert_in_darkmode&sanitize=true" align=middle width=102.0964989pt height=24.65753399999998pt/>
 ```javascript
 function f(x) {
   return 2 * x;
