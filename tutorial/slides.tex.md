@@ -1,4 +1,4 @@
-% A ~~Neural Network~~Perceptron from scratch in JavaScript
+% A Neural Network (Perceptron) from scratch in JavaScript
 % Ian Channing <https://github.com/ianchanning/neural-network-js>
 % February 12, 2019
 
@@ -6,7 +6,7 @@
 
 Maths and Computer Science at Imperial in London
 
-JavaScript / React for Imec
+JavaScript / React for imec
 
 All AI knowledge from online courses (In Andrew Ng we trust)
 
@@ -23,7 +23,7 @@ All AI knowledge from online courses (In Andrew Ng we trust)
 
 # Inspired / blatantly copied from
 
-Funfunfunction NN playlist [[3][3]]
+Funfunfunction neural network YouTube playlist [[3][3]]
 
 ... but it's missing maths
 
@@ -123,20 +123,18 @@ $y = f(x) = 2x$
     0 +------> x
       0 1 2
 
-# Mathsy definitions
+# Map my function up
 
-What's the mathsy name for:
+Change each item in list to get another list
 
-_I've got one 'set' and I want to go to another 'set' using `f`?_
+In maths this is called Mapping
 
      xs "exes"          ys "whys"
     +-------+          +-------+
     | 0 1 2 | -- f --> | 0 2 4 |
     +-------+          +-------+
 
-(This is actually University level maths - Set Theory)
-
-Mapping! `f` 'maps' `0,1,2` on to `0,2,4`
+`f` _maps_ the 'set' `0,1,2` _on to_ `0,2,4`
 
 # $f(x)$ in JavaScript
 
@@ -154,7 +152,7 @@ var ys = xs.map(f); // [0,2,4]
 
 # What's the point?
 
-Our graph will be made up of `[x1, x2]` points.
+Our graph will be made up of `[x1, x2]` points
 
 One random point in JavaScript:
 
@@ -166,7 +164,7 @@ var point = [rand(0, 400), rand(0, 400)];
 
 Perhaps I should use a for loop? (never!)
 
-Generate an empty array and use that to generate our new set.
+Generate an empty array and use that to generate our new set
 
 ```javascript
 function points(length) {
@@ -265,7 +263,7 @@ And... we've got a visualization of our data
 
 # Colour the circles red or blue
 
-In `build()`, rather than black circles we can draw random red or blue circles.
+In `build()`, rather than black circles we can draw random red or blue circles
 
 ```javascript
 var colours = ["red", "blue"];
@@ -276,7 +274,7 @@ generator.points(100).map(function(point) {
 
 # Separate these circles with a line
 
-Time to racially discriminate our happy circles ...err "linearly separate" them.
+Time to racially discriminate our happy circles ...err "linearly separate" them
 
 We need a wall!
 
@@ -305,7 +303,7 @@ svg.appendChild(chart.line([0, 0], [400, 400], "black"));
 
 One side are the blues, and the other side are the reds. Go blues!
 
-Now as the mighty dictator we know how to label them. Reminder: SVG coordinates have (0,0) in the top left.
+Now as the mighty dictator we know how to label them. Reminder: SVG coordinates have (0,0) in the top left
 
 In our `generator()`:
 
@@ -325,7 +323,7 @@ var team = generator.team(point);
 
 # Label my random examples
 
-Get our own slave labour / Amazon Mechanical Turk [[11][11]] to label data for us.
+Get our own slave labour / Amazon Mechanical Turk [[11][11]] to label data for us
 
 ```javascript
 var example = {
@@ -467,7 +465,7 @@ Someone is having a laugh / it's genius $E = mc^2$
 
 # Start somewhere
 
-Initialise our weights to either 0 or small random values.
+Initialise our weights to either 0 or small random values
 
 Add `weights` to `generator()` and return
 
@@ -494,7 +492,7 @@ return { prediction };
 
 # Display my predictions
 
-Instead of our known `team` use our `prediction`.
+Instead of our known `team` use our `prediction`
 
 In `build()` replace:
 
@@ -520,7 +518,7 @@ var myBuild = build(myGenerator, myChart, myNeuron);
 
 # Get a better feel for what the weights mean
 
-Change the initial `weights` to some random values and show the weights we're using.
+Change the initial `weights` to some random values and show the weights we're using
 
 In `draw()` add this at the end:
 
@@ -665,7 +663,7 @@ drawP("trained w: " + myBuild.weights.join());
 
 # Re-use the examples
 
-Used all the examples, but only once. Like revising with looking at your notes just once.
+Used all the examples, but only once. Like revising with looking at your notes just once
 
 So it's a good idea to re-use them but... **bias**
 
@@ -698,7 +696,9 @@ function loss(w, example) {
 
 # Average the metric across all examples
 
-$\frac{1}{m} \sum_j^m \lvert y_j - g(z_j) \rvert$
+$$
+\frac{1}{m} \sum_j^m \lvert y_j - g(z_j) \rvert
+$$
 
 Sum using the `reduce` function and then divide by the length
 
@@ -750,7 +750,7 @@ var weights = neuron.gradDescent(
 );
 ```
 
-Once we have a function we can differentiate, this is called Gradient Descent.
+Once we have a function we can differentiate, this is called Gradient Descent
 
 We can't differentiate the activation function, but once we use the sigmoid function the differentiated variables become almost exactly the same
 
