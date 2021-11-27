@@ -15,7 +15,7 @@ All done in pure JavaScript, from scratch with no libraries
 1. Open the `neural-network-js-master` directory
 1. Open `index.html`
 
-That should open in a browser with a page that looks like the above screenshot.
+That should open in a browser with a page that looks like the above screenshot
 
 # Tutorial
 
