@@ -23,7 +23,7 @@ My background (biases)
 
 Maths and Computer Science at Imperial in London
 
-JavaScript / React for imec
+JavaScript / React for Imec
 
 All AI knowledge from online courses (In Andrew Ng we trust)
 
