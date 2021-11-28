@@ -116,13 +116,6 @@ var ys = xs.map(f); // [0,2,4]
 
 # Start the coding
 
-Edit `index.html` and change the script `src`:
-
-```diff
--<script src="neural-network.js"></script>
-<script src="tutorial.js"></script>
-```
-
 Create a new file `tutorial.js` then add a `nn` function:
 
 ```javascript
@@ -132,6 +125,13 @@ function nn() {
 nn(); // call our function immediately
 ```
 Note: Wrap code inside a function to avoid evil global scope [[9][9]]
+
+Edit `index.html` and change the script `src`:
+
+```diff
+-<script src="neural-network.js"></script>
+<script src="tutorial.js"></script>
+```
 
 # Skeleton
 
@@ -164,7 +164,7 @@ return draw();
 
 Generate random test and training sets
 
-Add this inside the `generator` function (yes functions, in functions in functions is fine ;)):
+Add this inside `generator()` (yes functions, in functions in functions is fine ;)):
 
 ```javascript
 function rand(min, max) {
@@ -179,7 +179,7 @@ function rand(min, max) {
 
 Our graph will be made up of `[x1, x2]` points
 
-One random point in JavaScript (don't need to add this to the code):
+Example: one random point in JavaScript (don't need to add this to the code):
 
 ```javascript
 var point = [rand(0, 400), rand(0, 400)];
@@ -193,7 +193,7 @@ Map all the things!
 
 Generate an empty array and use that to generate our new set
 
-Add this inside `generator` at the end:
+Add this inside `generator()` at the end:
 
 ```javascript
 function points(length) {
@@ -231,7 +231,7 @@ Should've read CSS-Trick's excellent guide on SVG Charts [[10][10]]
 
 # Putting SVG in JavaScript
 
-Modify the `chart()` to add two new parameters:
+Modify `chart()` to add two new parameters:
 
 ```diff
 -function chart() {
@@ -343,7 +343,7 @@ return { svg, circle, line };
 
 # Build the wall! Build the wall!
 
-Add this to `build()`:
+Add this to `build()` before the `return`:
 
 ```javascript
 svg.appendChild(chart.line([0, 0], [400, 400], "black"));
@@ -410,28 +410,6 @@ Time for the good stuff
 
 **Don't confuse x, y with x1, x2**
 
-# A neural network of one neuron
-
-> An Englishman, even if he is alone, forms an orderly queue of one
->
-> — George Mikes
-
-Neurons act independently so can scale up process to a network
-
-          w1  +--------------------------+
-     x1 ------|               |          |
-          w2  | z = w . x + b | a = g(z) |----> ~y
-     x2 ------|               |          |
-              +--------------------------+
-
-`w . x` is the dot product / weighted sum
-
-`b` is the bias
-
-`g` is our 'activation' function
-
-`a` / `~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
-
 # Perceptron or neuron?
 
 Originally called a perceptron [[6][6]]
@@ -493,7 +471,7 @@ Subtract threshold from both sides and call it 'bias'
 
 # Activation graph
 
-![step (Neural Networks and Deep Learning [[13][13]])](step.png)
+![step (Neural Networks and Deep Learning [[13][13]])](tutorial/step.png)
 
 # Activation code
 
@@ -509,9 +487,31 @@ function activation(z) {
 }
 ```
 
-Easiest function you can write &rarr; basis for all AI
+Easiest function you can write &rarr; basis for all neural networks?
 
 Someone is having a laugh / it's genius <img src="/tutorial/tex/4a350954d54a4b6ed55ae926598470e4.svg?invert_in_darkmode&sanitize=true" align=middle width=63.09925874999999pt height=26.76175259999998pt/>
+
+# A neural network of one neuron
+
+> An Englishman, even if he is alone, forms an orderly queue of one
+>
+> — George Mikes
+
+Neurons act independently so can scale up process to a network
+
+          w1  +--------------------------+
+     x1 ------|               |          |
+          w2  | z = w . x + b | a = g(z) |----> ~y
+     x2 ------|               |          |
+              +--------------------------+
+
+`w . x` is the dot product / weighted sum
+
+`b` is the bias
+
+`g` is our 'activation' function
+
+`a` / `~y` is our approx/guess of `y`, usually called `ŷ` 'y hat'
 
 # Start somewhere
 
@@ -639,26 +639,37 @@ More maths in JavaScript
 
 The `reduce` function
 
-# 2 + 2 + 2
+# The sum of 2 times x, with x going from 1 to 3
 
 <img src="/tutorial/tex/1931ea285f03835bed05989c550c8dae.svg?invert_in_darkmode&sanitize=true" align=middle width=136.79980214999998pt height=24.657735299999988pt/>
 
-     x  2x Running total
+     x  2x y
      1  2  2
-     1  2  4
-    +1 +2  6
+     2  4  6
+    +3 +6  12
     -- --
-     3  6
+     6 12
 
 ```javascript
-function sum(t, x) {
-  return t + f(x);
+// same f(x) from before
+function f(x) {
+  return 2 * x;
 }
-var xs = [1, 1, 1];
-var y = xs.reduce(sum, 0); // 6
+function sum(y, x) {
+  return y + f(x);
+}
+var xs = [1, 2, 3];
+// sum the f(x)s starting from 0
+var y = xs.reduce(sum, 0); // y = 12
 ```
 
-(demo?)
+This is less obvious than the `map` example
+
+Still `sum` is just a function and `f(x)` is just a function
+
+We can change `sum` to `multiply` and we keep the mathematical concepts
+
+If we write this with loops we are changing the thought patterns
 
 # Train using all examples
 
@@ -822,11 +833,11 @@ Improved this by applying multiple steps of 'gradient descent'
 
 # Perceptron (not differentiable)
 
-![step (Neural Networks and Deep Learning [[13][13]])](step.png)
+![step (Neural Networks and Deep Learning [[13][13]])](tutorial/step.png)
 
 # Sigmoid neuron (differentiable)
 
-![sigmoid (Neural Networks and Deep Learning [[13][13]])](sigmoid.png)
+![sigmoid (Neural Networks and Deep Learning [[13][13]])](tutorial/sigmoid.png)
 
 # Sigmoid in code
 
