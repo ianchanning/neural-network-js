@@ -4,3 +4,4 @@ Session.vim
 package-lock.json
 yarn.lock
 tutorial.js
+coverage
